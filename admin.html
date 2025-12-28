@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Upload Comic (Realtime DB)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { background: #111; color: #fff; font-family: sans-serif; padding: 20px; text-align: center; }
+        input, button { padding: 10px; margin: 10px; width: 80%; max-width: 400px; display: block; margin: 10px auto; }
+        button { background: #ff6600; border: none; font-weight: bold; cursor: pointer; color: #000; }
+        .status { color: yellow; margin-top: 10px; font-weight: bold;}
+    </style>
+</head>
+<body>
+    <h1 style="font-family:'Teko'">UPLOAD NEW EPISODE</h1>
+    <p style="color:#aaa; font-size:0.9rem;">(Mode: Realtime Database - No CORS Setup Needed)</p>
+    
+    <input type="text" id="title" placeholder="Comic Title (e.g. Dream Walker)">
+    <input type="text" id="episode" placeholder="Episode (e.g. Ep. 01)">
+    <p style="font-size:0.8rem; color:#888;">*Guna gambar bawah 1MB sahaja</p>
+    <input type="file" id="imageFile" accept="image/*">
+    
+    <button id="uploadBtn">UPLOAD NOW</button>
+    <p class="status" id="statusMsg"></p>
+
+    <script type="module">
+        // 1. IMPORT (Kita guna Realtime Database sahaja)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        // 2. CONFIG BARU AWAK (Project: inkspace-c9dca)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqDvRp1IGmhC5_EtQ8I5lBBfkPOaUBR-A",
+            authDomain: "inkspace-c9dca.firebaseapp.com",
+            databaseURL: "https://inkspace-c9dca-default-rtdb.asia-southeast1.firebasedatabase.app", // Penting untuk Realtime DB
+            projectId: "inkspace-c9dca",
+            storageBucket: "inkspace-c9dca.firebasestorage.app",
+            messagingSenderId: "92054275710",
+            appId: "1:92054275710:web:b5e13736d46d7143307a2f"
+        };
+
+        // 3. INITIALIZE
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app); // Guna Realtime Database
+
+        // 4. FUNCTION UPLOAD
+        document.getElementById('uploadBtn').addEventListener('click', () => {
+            const title = document.getElementById('title').value;
+            const ep = document.getElementById('episode').value;
+            const file = document.getElementById('imageFile').files[0];
+            const status = document.getElementById('statusMsg');
+
+            if (!file || !title) return alert("Sila isi semua info!");
+
+            // Limit saiz 800KB (Sebab Realtime DB limit 1MB per record)
+            if (file.size > 800000) { 
+                return alert("File terlalu besar! Sila compress gambar jadi bawah 800KB.");
+            }
+
+            status.innerText = "Converting image...";
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file); // Tukar gambar jadi kod text (Base64)
+            
+            reader.onload = function() {
+                const base64Image = reader.result;
+                
+                status.innerText = "Sending to Database...";
+
+                // Simpan terus ke database (Tak perlu Storage = Tak perlu CORS)
+                const newPostRef = push(ref(db, 'episodes'));
+                set(newPostRef, {
+                    title: title,
+                    ep: ep,
+                    img: base64Image,
+                    timestamp: Date.now()
+                })
+                .then(() => {
+                    status.innerText = "Success!";
+                    alert("Berjaya Upload!");
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error(error);
+                    status.innerText = "Error: " + error.message;
+                    alert("Error: " + error.message);
+                });
+            };
+        });
+    </script>
+</body>
+</html>
