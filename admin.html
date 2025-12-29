@@ -3,57 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Studio Upload</title>
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap" rel="stylesheet">
+    <title>Admin - Studio Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600&family=Roboto+Condensed:wght@400&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { background: #111; color: #fff; font-family: sans-serif; padding: 20px; text-align: center; }
-        .container { max-width: 500px; margin: 0 auto; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #333; }
-        input, button { padding: 12px; margin: 10px 0; width: 100%; display: block; box-sizing: border-box; }
-        label { text-align: left; display: block; margin-top: 15px; color: #ff6600; font-weight: bold; font-family: 'Teko'; font-size: 1.2rem; }
+        body { background: #111; color: #fff; font-family: 'Roboto Condensed', sans-serif; padding: 0; margin: 0; }
         
-        input[type="text"] { background: #222; border: 1px solid #444; color: #fff; border-radius: 4px; }
-        button { background: #ff6600; border: none; font-weight: bold; cursor: pointer; color: #000; font-size: 1.1rem; }
-        button:hover { background: #ff8533; }
-        
-        .status { color: yellow; margin-top: 10px; font-weight: bold; }
-        .note { font-size: 0.8rem; color: #888; text-align: left; margin-bottom: 5px; }
-        hr { border-color: #333; margin: 20px 0; }
+        /* HEADER */
+        .header { background: #000; padding: 20px; border-bottom: 2px solid #ff6600; display: flex; justify-content: space-between; align-items: center; }
+        .title { font-family:'Teko'; font-size: 2rem; margin: 0; color: #fff; }
+        .title span { color: #ff6600; }
+
+        /* TABS */
+        .tabs { display: flex; background: #1a1a1a; cursor: pointer; }
+        .tab { flex: 1; padding: 15px; text-align: center; font-weight: bold; border-bottom: 3px solid transparent; transition: 0.3s; }
+        .tab:hover { background: #222; }
+        .tab.active { border-bottom: 3px solid #ff6600; color: #ff6600; background: #222; }
+
+        /* CONTENT */
+        .container { max-width: 800px; margin: 30px auto; padding: 20px; }
+        .panel { display: none; }
+        .panel.active { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+        /* FORMS */
+        label { display: block; margin-top: 20px; color: #ff6600; font-weight: bold; font-family: 'Teko'; font-size: 1.3rem; }
+        input, select { width: 100%; padding: 12px; margin: 5px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 4px; box-sizing: border-box; }
+        .note { font-size: 0.85rem; color: #888; margin-bottom: 5px; }
+
+        /* BUTTONS */
+        .btn { padding: 12px 25px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; border-radius: 4px; margin-top: 20px; width: 100%; transition: 0.2s; }
+        .btn-upload { background: #ff6600; color: #000; }
+        .btn-upload:hover { background: #ff8533; }
+        .btn-delete { background: #cc0000; color: #fff; width: auto; padding: 5px 15px; font-size: 0.9rem; margin: 0; }
+
+        /* PREVIEW AREA */
+        .file-preview { margin-top: 10px; padding: 10px; background: #1a1a1a; border: 1px dashed #444; min-height: 50px; color: #ccc; }
+
+        /* MANAGEMENT LIST */
+        .series-item { background: #1a1a1a; border: 1px solid #333; margin-bottom: 10px; border-radius: 5px; overflow: hidden; }
+        .series-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: #222; cursor: pointer; }
+        .series-header:hover { background: #2a2a2a; }
+        .ep-list { display: none; padding: 10px; background: #111; }
+        .ep-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #333; }
+        .ep-item:last-child { border-bottom: none; }
+        .show-ep { display: block; }
+
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; display: none; justify-content: center; align-items: center; flex-direction: column; }
+        .loader { border: 5px solid #333; border-top: 5px solid #ff6600; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
 
-    <h1 style="font-family:'Teko'; font-size: 3rem; margin-bottom: 10px;">STUDIO DASHBOARD</h1>
-    
+    <div class="header">
+        <h1 class="title">INK<span>SPACE</span> ADMIN</h1>
+        <div style="font-size:0.9rem; color:#888;">Manage Content</div>
+    </div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('uploadPanel')">UPLOAD NEW</div>
+        <div class="tab" onclick="switchTab('managePanel')">MANAGE / DELETE</div>
+    </div>
+
     <div class="container">
         
-        <label>1. NAMA SIRI / KOMIK</label>
-        <p class="note">*Wajib sama setiap kali upload episod baru (cth: "Dream Walker")</p>
-        <input type="text" id="seriesTitle" placeholder="Tajuk Komik...">
+        <div id="uploadPanel" class="panel active">
+            <label>1. NAMA SIRI (Series Title)</label>
+            <input type="text" id="seriesTitle" placeholder="Contoh: Pendekar Cyber" onblur="checkSeries()">
+            <div id="seriesStatus" style="font-size:0.9rem; margin-top:5px;"></div>
 
-        <label>2. GAMBAR COVER (Thumbnail Utama)</label>
-        <p class="note">*Upload sekali je pun okay. Kalau nak update cover baru, upload sini.</p>
-        <input type="file" id="coverFile" accept="image/*">
+            <label>2. AUTHOR (Penulis)</label>
+            <input type="text" id="authorName" placeholder="Nama Pelukis...">
 
-        <hr>
+            <label>3. COVER IMAGE (Poster Utama)</label>
+            <p class="note">*Hanya upload jika siri baru atau nak tukar cover.</p>
+            <input type="file" id="coverFile" accept="image/*">
 
-        <label>3. NAMA EPISOD</label>
-        <input type="text" id="epName" placeholder="Contoh: Episod 01 - Permulaan">
+            <hr style="border-color:#333; margin:30px 0;">
 
-        <label>4. GAMBAR EPISOD (Isi Kandungan)</label>
-        <p class="note">*Gambar memanjang ke bawah (Webtoon style)</p>
-        <input type="file" id="epFile" accept="image/*">
+            <label>4. NAMA EPISOD</label>
+            <input type="text" id="epName" placeholder="Contoh: Episod 01">
 
-        <br>
-        <button id="uploadBtn">PUBLISH SEKARANG</button>
-        <p class="status" id="statusMsg"></p>
+            <label>5. PAGES (Isi Komik)</label>
+            <p class="note">*Boleh select BANYAK gambar (Select All > Open). Max 1MB/page.</p>
+            <input type="file" id="epFiles" multiple accept="image/*" onchange="previewFiles()">
+            
+            <div id="filePreview" class="file-preview">No files selected.</div>
 
+            <button class="btn btn-upload" id="uploadBtn">PUBLISH EPISODE</button>
+        </div>
+
+        <div id="managePanel" class="panel">
+            <h2 style="font-family:'Teko'; color:#ff6600;">EXISTING COMICS</h2>
+            <p class="note">Click tajuk untuk tengok episod. Hati-hati button Delete!</p>
+            <div id="manageList">
+                <p style="text-align:center; padding:20px; color:#666;">Loading database...</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="loading-overlay" id="loader">
+        <div class="loader"></div>
+        <p style="margin-top:15px; font-weight:bold; color:#fff;" id="loaderText">Processing...</p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getDatabase, ref, update, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { getDatabase, ref, update, push, get, child, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        // CONFIG (PROJECT: inkspace-c9dca)
+        // CONFIG (GANTI DENGAN API KEY AWAK)
         const firebaseConfig = {
             apiKey: "AIzaSyDqDvRp1IGmhC5_EtQ8I5lBBfkPOaUBR-A",
             authDomain: "inkspace-c9dca.firebaseapp.com",
@@ -67,7 +128,21 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Fungsi Helper: Tukar Gambar ke Base64 (Promise)
+        // --- GLOBAL VARS ---
+        let currentSeriesEpisodes = [];
+        let isSeriesExist = false;
+
+        // --- HELPERS ---
+        window.switchTab = (tabName) => {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            if(tabName === 'managePanel') loadManagementList();
+        }
+
+        const createSlug = (text) => text.toLowerCase().replace(/ /g, "_").replace(/[^\w-]+/g, "");
+        
         const convertToBase64 = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -77,78 +152,186 @@
             });
         };
 
-        // Fungsi Helper: Buat ID unik dari tajuk (contoh: "Dream Walker" -> "dream_walker")
-        const createSlug = (text) => {
-            return text.toLowerCase().replace(/ /g, "_").replace(/[^\w-]+/g, "");
-        };
+        window.previewFiles = () => {
+            const files = document.getElementById('epFiles').files;
+            const display = document.getElementById('filePreview');
+            if(files.length > 0) {
+                display.innerHTML = `✅ <b>${files.length} Pages Selected</b><br>`;
+                // Tunjuk nama file pertama dan terakhir untuk confirm urutan
+                display.innerHTML += `<small>First: ${files[0].name} ... Last: ${files[files.length-1].name}</small>`;
+            } else {
+                display.innerHTML = "No files selected.";
+            }
+        }
+
+        // --- UPLOAD LOGIC ---
+        window.checkSeries = async () => {
+            const title = document.getElementById('seriesTitle').value.trim();
+            const statusDiv = document.getElementById('seriesStatus');
+            const authorInput = document.getElementById('authorName');
+
+            if(!title) return;
+            
+            const slug = createSlug(title);
+            const snapshot = await get(child(ref(db), `series/${slug}`));
+
+            if(snapshot.exists()) {
+                isSeriesExist = true;
+                const data = snapshot.val();
+                statusDiv.innerHTML = `<span style="color:#0f0">✔ Siri dijumpai.</span>`;
+                if(data.author) authorInput.value = data.author;
+            } else {
+                isSeriesExist = false;
+                statusDiv.innerHTML = `<span style="color:#ffcc00">✨ Siri baru akan dicipta.</span>`;
+                authorInput.value = "";
+            }
+        }
 
         document.getElementById('uploadBtn').addEventListener('click', async () => {
             const title = document.getElementById('seriesTitle').value.trim();
+            const author = document.getElementById('authorName').value.trim();
             const epName = document.getElementById('epName').value.trim();
             const coverFile = document.getElementById('coverFile').files[0];
-            const epFile = document.getElementById('epFile').files[0];
-            const status = document.getElementById('statusMsg');
+            const epFiles = document.getElementById('epFiles').files; // MULTIPLE FILES
 
-            // Validation Mudah
-            if (!title) return alert("Wajib letak Tajuk Komik!");
-            if (!epName || !epFile) return alert("Wajib letak Nama Episod dan Gambar Episod!");
+            const loader = document.getElementById('loader');
+            const loaderText = document.getElementById('loaderText');
 
-            // Check Saiz
-            if (epFile.size > 800000) return alert("Gambar Episod terlalu besar! (Max 800KB)");
-            if (coverFile && coverFile.size > 800000) return alert("Gambar Cover terlalu besar! (Max 800KB)");
+            if(!title || !author || !epName || epFiles.length === 0) {
+                return alert("Sila isi semua maklumat dan pilih gambar page!");
+            }
 
-            status.innerText = "Sedang memproses...";
-            
+            if(!isSeriesExist && !coverFile) return alert("Siri baru wajib ada Cover Image!");
+
+            // Start Loading
+            loader.style.display = 'flex';
+            loaderText.innerText = "Processing images... (This may take a while)";
+
             try {
-                // 1. Generate ID untuk siri ni
                 const seriesId = createSlug(title);
-                
-                // 2. Prepare Data Update
                 const updates = {};
                 const timestamp = Date.now();
 
-                // A. Kalau ada Cover baru, update info siri utama
-                if (coverFile) {
-                    status.innerText = "Converting Cover...";
+                // 1. Handle Series Info
+                updates[`series/${seriesId}/title`] = title;
+                updates[`series/${seriesId}/author`] = author;
+                updates[`series/${seriesId}/last_updated`] = timestamp;
+
+                if(coverFile) {
                     const base64Cover = await convertToBase64(coverFile);
-                    
-                    // Simpan info utama siri
-                    updates[`series/${seriesId}/title`] = title;
                     updates[`series/${seriesId}/cover`] = base64Cover;
-                    updates[`series/${seriesId}/last_updated`] = timestamp;
-                } else {
-                    // Kalau takde cover, just update timestamp & title (incase typo sebelum ni)
-                    updates[`series/${seriesId}/title`] = title;
-                    updates[`series/${seriesId}/last_updated`] = timestamp;
                 }
 
-                // B. Process Gambar Episod
-                status.innerText = "Converting Episode...";
-                const base64Ep = await convertToBase64(epFile);
+                // 2. Handle Multiple Pages (Batch Conversion)
+                loaderText.innerText = `Converting ${epFiles.length} pages...`;
+                
+                // Convert FileList to Array and sort by name to ensure order (1.jpg, 2.jpg)
+                const sortedFiles = Array.from(epFiles).sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
+                
+                // Convert all pages to Base64
+                const pagePromises = sortedFiles.map(file => convertToBase64(file));
+                const pagesArray = await Promise.all(pagePromises);
 
-                // C. Generate ID baru untuk episod ni
+                // 3. Save Episode Data
                 const newEpKey = push(ref(db, `series/${seriesId}/episodes`)).key;
-
-                // D. Masukkan data episod dalam siri tu
+                
                 updates[`series/${seriesId}/episodes/${newEpKey}`] = {
                     name: epName,
-                    img: base64Ep,
+                    pages: pagesArray, // ARRAY GAMBAR DISIMPAN SINI
                     timestamp: timestamp
                 };
 
-                // 3. Hantar semua data sekali gus ke Database
-                status.innerText = "Uploading to Database...";
+                // 4. Upload
+                loaderText.innerText = "Uploading to Database...";
                 await update(ref(db), updates);
 
-                status.innerText = "BERJAYA!";
-                alert(`Berjaya publish ${epName} untuk siri ${title}!`);
+                alert("Berjaya Publish!");
                 location.reload();
 
             } catch (error) {
                 console.error(error);
-                status.innerText = "Error: " + error.message;
+                alert("Error: " + error.message);
+                loader.style.display = 'none';
             }
         });
+
+        // --- MANAGE / DELETE LOGIC ---
+        window.loadManagementList = () => {
+            const listDiv = document.getElementById('manageList');
+            listDiv.innerHTML = '<p style="text-align:center; padding:20px; color:#666;">Loading...</p>';
+
+            onValue(ref(db, 'series'), (snapshot) => {
+                listDiv.innerHTML = '';
+                const data = snapshot.val();
+
+                if(!data) {
+                    listDiv.innerHTML = '<p style="text-align:center; padding:20px;">No comics found.</p>';
+                    return;
+                }
+
+                Object.keys(data).forEach(seriesKey => {
+                    const s = data[seriesKey];
+                    const epCount = s.episodes ? Object.keys(s.episodes).length : 0;
+
+                    // HTML untuk Siri
+                    let html = `
+                        <div class="series-item">
+                            <div class="series-header" onclick="toggleEpList('${seriesKey}')">
+                                <div>
+                                    <strong style="font-size:1.1rem">${s.title}</strong><br>
+                                    <span style="font-size:0.8rem; color:#888;">${epCount} Episodes</span>
+                                </div>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div id="epList-${seriesKey}" class="ep-list">
+                    `;
+
+                    // HTML untuk Episod dalam Siri
+                    if(s.episodes) {
+                        Object.keys(s.episodes).forEach(epKey => {
+                            const ep = s.episodes[epKey];
+                            html += `
+                                <div class="ep-item">
+                                    <span>${ep.name} <small style="color:#666">(${ep.pages ? ep.pages.length : 0} pages)</small></span>
+                                    <button class="btn btn-delete" onclick="deleteEpisode('${seriesKey}', '${epKey}')">DELETE</button>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        html += `<div style="padding:10px; color:#555;">No episodes.</div>`;
+                    }
+
+                    html += `</div></div>`; // Tutup div
+                    listDiv.innerHTML += html;
+                });
+            }, { onlyOnce: true });
+        };
+
+        window.toggleEpList = (id) => {
+            const el = document.getElementById(`epList-${id}`);
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        };
+
+        window.deleteEpisode = async (seriesId, epId) => {
+            if(confirm("Are you sure you want to DELETE this episode? cannot be undone.")) {
+                try {
+                    await remove(ref(db, `series/${seriesId}/episodes/${epId}`));
+                    alert("Deleted.");
+                    loadManagementList(); // Refresh list
+                } catch(e) {
+                    alert("Error deleting: " + e.message);
+                }
+            }
+        };
+
+        // Expose functions to HTML
+        window.checkSeries = checkSeries;
+        window.previewFiles = previewFiles;
+        window.switchTab = switchTab;
+        window.toggleEpList = toggleEpList;
+        window.deleteEpisode = deleteEpisode;
+
     </script>
 </body>
 </html>
+
