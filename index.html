@@ -1,477 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INK SPACE - Official Comic Page</title>
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
-        /* --- TEMA KEKAL SAMA (PREMIUM BLACK & ORANGE) --- */
-        :root {
-            --bg-body: #050505;
-            --bg-card: #141414;
-            --accent: #ff6600;
-            --text-main: #ffffff;
-            --text-muted: #888888;
-            --border: 1px solid #333;
-            --input-bg: #222;
-        }
-
+        /* CSS ASAS SAMA */
+        :root { --bg-body: #050505; --bg-card: #141414; --accent: #ff6600; --text-main: #ffffff; --text-muted: #888888; --border: 1px solid #333; }
         * { box-sizing: border-box; }
-
-        body {
-            margin: 0; padding: 0;
-            font-family: 'Roboto Condensed', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            background-image: radial-gradient(rgba(255,255,255,0.1) 1.5px, transparent 1.5px);
-            background-size: 24px 24px;
-            min-height: 100vh;
-        }
-
-        /* --- HEADER --- */
-        .navbar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px 30px;
-            background: rgba(10, 10, 10, 0.95);
-            border-bottom: 2px solid var(--accent);
-            position: sticky; top: 0; z-index: 100;
-            backdrop-filter: blur(10px);
-        }
-
-        .nav-left { display: flex; align-items: center; gap: 30px; }
+        body { margin: 0; padding: 0; font-family: 'Roboto Condensed', sans-serif; background-color: var(--bg-body); color: var(--text-main); background-image: radial-gradient(rgba(255,255,255,0.1) 1.5px, transparent 1.5px); background-size: 24px 24px; min-height: 100vh; }
         
-        .logo { font-family: 'Teko', sans-serif; font-size: 2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px; cursor:pointer; text-decoration: none;}
+        /* HEADER & HERO KEKAL SAMA (Ringkaskan CSS untuk jimat ruang chat) */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(10, 10, 10, 0.95); border-bottom: 2px solid var(--accent); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
+        .logo { font-family: 'Teko', sans-serif; font-size: 2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; }
         .logo span { color: var(--accent); }
-
         .nav-links { display: flex; gap: 20px; }
-        .nav-links a {
-            color: #ccc; text-decoration: none; font-weight: 700; font-size: 1rem;
-            transition: 0.3s; position: relative;
-        }
+        .nav-links a { color: #ccc; text-decoration: none; font-weight: 700; transition: 0.3s; }
         .nav-links a:hover { color: var(--text-main); }
-        .nav-links a::after {
-            content: ''; position: absolute; width: 0; height: 2px; bottom: -5px; left: 0;
-            background-color: var(--accent); transition: width 0.3s;
-        }
-        .nav-links a:hover::after { width: 100%; }
-
-        .nav-right { display: flex; align-items: center; gap: 15px; }
-
-        /* --- SEARCH BAR --- */
-        .search-container { position: relative; display: flex; align-items: center; }
-        .search-box {
-            background: var(--input-bg); border: 1px solid #444; border-radius: 4px;
-            padding: 8px 15px; display: flex; align-items: center; gap: 10px; width: 220px;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-        .search-box.active { width: 300px; border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 102, 0, 0.3); background: #000; }
-        .search-box input { background: transparent; border: none; color: #fff; outline: none; width: 100%; font-size: 0.9rem; }
-        .search-box i { color: #888; transition: 0.3s; }
-        .search-box.active i { color: var(--accent); }
-
-        /* --- LANGUAGE DROPDOWN --- */
-        .lang-container { position: relative; }
-        .lang-btn {
-            background: transparent; border: 1px solid #444; color: #fff;
-            padding: 8px 12px; border-radius: 4px; cursor: pointer;
-            font-size: 0.9rem; display: flex; align-items: center; gap: 8px;
-            min-width: 130px; justify-content: space-between;
-        }
-        .lang-btn:hover { border-color: #fff; }
-        .lang-dropdown {
-            display: none; position: absolute; top: 110%; right: 0;
-            background: #1a1a1a; border: 1px solid #444;
-            border-radius: 4px; width: 100%;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5); overflow: hidden;
-            z-index: 200;
-        }
-        .lang-dropdown.show { display: block; }
-        .lang-option { padding: 10px 15px; cursor: pointer; font-size: 0.9rem; color: #ccc; transition: 0.2s; }
-        .lang-option:hover { background: var(--accent); color: #000; font-weight: bold; }
-        .lang-option.active { background: #333; color: var(--accent); font-weight: bold; }
-
-        /* --- LAYOUT --- */
         .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-
-        .hero-box {
-            position: relative; height: 350px;
-            border: 1px solid var(--accent); border-radius: 8px;
-            overflow: hidden; margin-bottom: 40px;
-            box-shadow: 0px 0px 15px rgba(255, 102, 0, 0.15);
-        }
-        .hero-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; transition: 0.5s; }
-        .hero-box:hover img { opacity: 0.9; transform: scale(1.05); }
-        .hero-content {
-            position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px;
-            background: linear-gradient(to top, #000, transparent);
-        }
-        .tag-orange { background: var(--accent); color: #000; padding: 5px 12px; font-weight: bold; border-radius: 4px; display: inline-block; margin-bottom: 10px; }
-        .hero-title { font-family: 'Teko'; font-size: 3.5rem; line-height: 1; margin: 0; text-shadow: 2px 2px 0px #000; }
-        .hero-desc { color: #ccc; margin-top: 5px; }
-
-        .section-header {
-            display: flex; justify-content: space-between; align-items: flex-end;
-            margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;
-        }
+        
+        /* GRID UTAMA */
+        .section-header { border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
         .section-title { font-family: 'Teko'; font-size: 2rem; color: var(--accent); margin: 0; }
-        .view-all-btn {
-            background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted);
-            padding: 5px 15px; border-radius: 20px; cursor: pointer; font-size: 0.9rem; transition: 0.3s;
-        }
-        .view-all-btn:hover { border-color: var(--accent); color: var(--accent); }
-
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 25px; }
         
-        /* Ubah cursor jadi pointer sebab boleh click */
-        .card { 
-            background: var(--bg-card); border: 1px solid #333; border-radius: 8px; overflow: hidden; 
-            transition: 0.3s; position: relative; cursor: pointer; 
-        }
+        /* CARD STYLE (COVER UTAMA) */
+        .card { background: var(--bg-card); border: 1px solid #333; border-radius: 8px; overflow: hidden; transition: 0.3s; position: relative; cursor: pointer; }
         .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0px 5px 15px rgba(255, 102, 0, 0.2); }
-        .card-img-wrap { height: 260px; overflow: hidden; position: relative; }
+        .card-img-wrap { height: 280px; overflow: hidden; position: relative; }
         .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
         .card:hover .card-img-wrap img { transform: scale(1.1); }
         .card-info { padding: 15px; }
-        .card-title { font-family: 'Teko'; font-size: 1.4rem; margin: 0 0 5px 0; color: #fff; line-height: 1.1; }
-        .card-meta { font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; }
+        .card-title { font-family: 'Teko'; font-size: 1.6rem; margin: 0 0 5px 0; color: #fff; line-height: 1.1; }
+        .card-meta { font-size: 0.9rem; color: var(--text-muted); display: flex; justify-content: space-between; }
+        .ep-badge { background: var(--accent); color: #000; padding: 2px 8px; font-weight: bold; border-radius: 4px; font-size: 0.8rem; }
+
+        /* --- MODAL (POPUP EPISOD) --- */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: #1a1a1a; width: 90%; max-width: 500px; border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; box-shadow: 0 0 30px rgba(255, 102, 0, 0.3); animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
-        .love-btn { position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 35px; height: 35px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; z-index: 10; }
-        .love-btn:hover { background: var(--accent); border-color: var(--accent); color: #000; }
+        .modal-header { padding: 20px; background: #111; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+        .modal-title { font-family: 'Teko'; font-size: 2rem; margin: 0; color: #fff; }
+        .close-btn { background: none; border: none; color: #888; font-size: 1.5rem; cursor: pointer; }
+        .close-btn:hover { color: #fff; }
+        
+        .modal-body { padding: 0; max-height: 60vh; overflow-y: auto; }
+        .episode-item { padding: 15px 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; text-decoration: none; color: #fff; }
+        .episode-item:hover { background: #333; color: var(--accent); padding-left: 25px; }
+        .episode-item:last-child { border-bottom: none; }
+        .ep-name { font-weight: bold; font-size: 1.1rem; }
+        .ep-date { font-size: 0.8rem; color: #666; }
 
-        #toast { visibility: hidden; min-width: 250px; background-color: var(--bg-card); color: #fff; text-align: center; border-radius: 4px; padding: 16px; position: fixed; z-index: 1000; left: 50%; bottom: 30px; transform: translateX(-50%); border: 1px solid var(--accent); }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
-        #no-result { display: none; text-align: center; color: #888; width: 100%; padding: 40px; grid-column: 1 / -1; }
-
-
-        /* --- CSS UNTUK MOBILE FRIENDLY (MEDIA QUERY) --- */
+        /* MOBILE FIX */
         @media (max-width: 768px) {
-            
-            /* 1. Header Susun Menegak & Padat */
-            .navbar {
-                flex-direction: column;
-                gap: 15px;
-                padding: 15px;
-            }
-            .nav-left {
-                width: 100%;
-                justify-content: space-between;
-            }
-            .nav-links {
-                display: none;
-            }
-            .nav-right {
-                width: 100%;
-                flex-direction: column;
-                gap: 10px;
-            }
-            .search-container, .search-box {
-                width: 100%;
-            }
-            .search-box.active {
-                width: 100%;
-            }
-            .lang-container, .lang-btn {
-                width: 100%;
-            }
-
-            /* 2. Hero Section Pendek Sikit */
-            .hero-box {
-                height: 250px;
-            }
-            .hero-title {
-                font-size: 2.5rem;
-            }
-
-            /* 3. Grid Komik 2 Lajur */
-            .grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 15px;
-            }
-            .card-img-wrap {
-                height: 200px;
-            }
-            .card-title {
-                font-size: 1.2rem;
-            }
-
-            /* 4. Padding Container */
-            .container {
-                padding: 15px;
-            }
+            .navbar { flex-direction: column; gap: 10px; }
+            .nav-links { display: none; }
+            .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+            .card-img-wrap { height: 220px; }
         }
-
     </style>
 </head>
 <body>
 
     <nav class="navbar">
         <div class="nav-left">
-            <a href="index.html" class="logo">INK<span>SPACE</span></a>
-            
-            <div class="nav-links">
-                <a href="#" data-lang-key="nav_latest">New Updates</a>
-                <a href="#" data-lang-key="nav_series">My Series</a>
-                <a href="#" data-lang-key="nav_illustrations">Illustrations</a>
-                <a href="#" data-lang-key="nav_shop">Support Me</a>
-                <a href="#" data-lang-key="nav_about">About Creator</a>
-            </div>
+            <a href="#" class="logo">INK<span>SPACE</span></a>
         </div>
-
-        <div class="nav-right">
-            <div class="search-container">
-                <div class="search-box" id="searchBox">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="searchInput" data-lang-placeholder="search_ph" placeholder="Search Episodes..." onfocus="expandSearch(true)" onblur="expandSearch(false)">
-                </div>
-            </div>
-            
-            <div class="lang-container">
-                <button class="lang-btn" onclick="toggleLangMenu()">
-                    <span id="currentLangLabel">Language <b>EN</b></span> 
-                    <i class="fas fa-caret-down"></i>
-                </button>
-                <div class="lang-dropdown" id="langMenu">
-                    <div class="lang-option active" onclick="changeLang('en')" id="opt_en">English</div>
-                    <div class="lang-option" onclick="changeLang('ms')" id="opt_ms">Bahasa Melayu</div>
-                </div>
-            </div>
-        </div>
+        <div class="nav-right" style="color:#888;">Official Series List</div>
     </nav>
 
     <div class="container">
-
-        <div class="hero-box" onclick="openComic('THE DREAM WALKER', 'Ep. 01')" style="cursor: pointer;">
-            <img src="https://images.unsplash.com/photo-1618336753974-aae8e04506aa?auto=format&fit=crop&w=1200&q=80" alt="Hero Art">
-            <div class="hero-content">
-                <span class="tag-orange" data-lang-key="hero_tag">Featured Original</span>
-                <h1 class="hero-title">THE DREAM WALKER</h1>
-                <p class="hero-desc" data-lang-key="hero_desc">An original sci-fi webcomic by [Your Name]. Read the latest arc now!</p>
-            </div>
-        </div>
-
         <div class="section-header">
-            <h2 class="section-title" data-lang-key="sec_fresh">Latest Episodes</h2>
-            <button class="view-all-btn" onclick="resetFilter()">
-                <span data-lang-key="btn_viewall">All Episodes</span> <i class="fas fa-arrow-right"></i>
-            </button>
+            <h2 class="section-title">MY COMIC SERIES</h2>
         </div>
 
-        <div class="grid" id="comic-grid">
-            </div>
-        <div id="no-result"><h3 data-lang-key="msg_noresult">No episodes found :(</h3></div>
-
+        <div class="grid" id="series-grid">
+            <p style="color:#666;">Loading comics...</p>
+        </div>
     </div>
 
-    <div id="toast">Added to Liked!</div>
+    <div class="modal-overlay" id="epModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">TITLE</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalList">
+                </div>
+        </div>
+    </div>
 
     <script type="module">
-        // 1. IMPORT MODULE BARU (Realtime Database)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        // 2. CONFIG BARU (Project: inkspace-c9dca)
+        // CONFIG (SAMA MACAM ADMIN)
         const firebaseConfig = {
             apiKey: "AIzaSyDqDvRp1IGmhC5_EtQ8I5lBBfkPOaUBR-A",
             authDomain: "inkspace-c9dca.firebaseapp.com",
-            databaseURL: "https://inkspace-c9dca-default-rtdb.asia-southeast1.firebasedatabase.app", // Wajib ada untuk Realtime DB
+            databaseURL: "https://inkspace-c9dca-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "inkspace-c9dca",
             storageBucket: "inkspace-c9dca.firebasestorage.app",
             messagingSenderId: "92054275710",
             appId: "1:92054275710:web:b5e13736d46d7143307a2f"
         };
 
-        // 3. INITIALIZE
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app); // Guna Realtime DB
+        const db = getDatabase(app);
 
-        const container = document.getElementById('comic-grid');
-        const noResult = document.getElementById('no-result');
+        const grid = document.getElementById('series-grid');
 
-        // 4. BACA DATA DARI DATABASE (Realtime)
-        const comicsRef = ref(db, 'episodes');
-        
-        onValue(comicsRef, (snapshot) => {
-            container.innerHTML = ''; // Reset container
+        // BACA DATA 'SERIES' (Bukan lagi 'episodes')
+        const seriesRef = ref(db, 'series');
+
+        onValue(seriesRef, (snapshot) => {
+            grid.innerHTML = '';
             const data = snapshot.val();
-            const comicsData = [];
 
             if (!data) {
-                noResult.style.display = 'block';
-            } else {
-                noResult.style.display = 'none';
+                grid.innerHTML = '<p>No comics found yet.</p>';
+                return;
+            }
+
+            // Convert object to array & Sort by last updated
+            const seriesList = Object.keys(data).map(key => {
+                return { id: key, ...data[key] };
+            });
+            seriesList.sort((a, b) => b.last_updated - a.last_updated);
+
+            seriesList.forEach(s => {
+                // Kira berapa episod ada
+                const epCount = s.episodes ? Object.keys(s.episodes).length : 0;
                 
-                // Realtime DB pulangkan Object, kita tukar jadi Array
-                Object.keys(data).forEach(key => {
-                    comicsData.push(data[key]);
-                });
+                // Buat Kad
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.onclick = () => openModal(s); // Bila tekan, buka modal
 
-                // Sort: Yang baru upload duduk atas
-                comicsData.sort((a, b) => b.timestamp - a.timestamp);
-
-                // Render Card
-                comicsData.forEach(c => {
-                    container.innerHTML += `
-                        <div class="card" onclick="openComic('${c.title}', '${c.ep}')">
-                            <div class="card-img-wrap">
-                                <img src="${c.img}" alt="${c.title}">
-                                <button class="love-btn" onclick="event.stopPropagation(); showToast('${c.title}')">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                            <div class="card-info">
-                                <h3 class="card-title">${c.title}</h3>
-                                <div class="card-meta">
-                                    <span><i class="far fa-file-alt" style="color:var(--accent)"></i> ${c.ep}</span>
-                                    <span>Just now</span>
-                                </div>
-                            </div>
+                card.innerHTML = `
+                    <div class="card-img-wrap">
+                        <img src="${s.cover}" alt="${s.title}">
+                    </div>
+                    <div class="card-info">
+                        <h3 class="card-title">${s.title}</h3>
+                        <div class="card-meta">
+                            <span class="ep-badge">${epCount} EPISODES</span>
+                            <span>UPDATED</span>
                         </div>
-                    `;
-                });
-            }
-
-            // Simpan data untuk function Search
-            window.allComicsData = comicsData;
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
         });
 
-        // --- SEARCH FUNCTION ---
-        const searchInput = document.getElementById('searchInput');
-        
-        searchInput.addEventListener('keyup', function(e) {
-            const term = e.target.value.toLowerCase();
-            const allComics = window.allComicsData || [];
+        // --- MODAL LOGIC ---
+        window.openModal = function(seriesData) {
+            document.getElementById('modalTitle').innerText = seriesData.title;
+            const listContainer = document.getElementById('modalList');
+            listContainer.innerHTML = '';
 
-            const filtered = allComics.filter(comic => comic.title.toLowerCase().includes(term));
-            
-            container.innerHTML = '';
-            if(filtered.length === 0) {
-                 noResult.style.display = 'block';
-            } else {
-                 noResult.style.display = 'none';
-                 filtered.forEach(c => {
-                     container.innerHTML += `
-                        <div class="card" onclick="openComic('${c.title}', '${c.ep}')">
-                            <div class="card-img-wrap">
-                                <img src="${c.img}" alt="${c.title}">
-                                <button class="love-btn" onclick="event.stopPropagation(); showToast('${c.title}')">
-                                    <i class="fas fa-heart"></i>
-                                </button>
-                            </div>
-                            <div class="card-info">
-                                <h3 class="card-title">${c.title}</h3>
-                                <div class="card-meta">
-                                    <span><i class="far fa-file-alt" style="color:var(--accent)"></i> ${c.ep}</span>
-                                </div>
-                            </div>
-                        </div>
+            if (seriesData.episodes) {
+                // Convert episod ke array & Sort (Ep 1, Ep 2...)
+                const episodes = Object.keys(seriesData.episodes).map(k => seriesData.episodes[k]);
+                
+                // Sort simple ikut nama (Ep 1 < Ep 2)
+                episodes.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
+
+                episodes.forEach(ep => {
+                    const link = document.createElement('a');
+                    link.className = 'episode-item';
+                    
+                    // Link ke Read page (bawa Tajuk & Nama Episod)
+                    const urlTitle = encodeURIComponent(seriesData.title);
+                    const urlEp = encodeURIComponent(ep.name);
+                    link.href = `read.html?title=${urlTitle}&ep=${urlEp}`;
+                    
+                    link.innerHTML = `
+                        <span class="ep-name">${ep.name}</span>
+                        <span class="ep-date"><i class="fas fa-chevron-right"></i></span>
                     `;
+                    listContainer.appendChild(link);
                 });
-            }
-        });
-
-        // --- FUNGSI LAIN-LAIN ---
-        
-        window.expandSearch = function(isFocused) {
-            const box = document.getElementById('searchBox');
-            if(isFocused) box.classList.add('active');
-            else if(searchInput.value === "") box.classList.remove('active');
-        }
-
-        window.openComic = function(title, episode) {
-            const urlTitle = encodeURIComponent(title);
-            const urlEp = encodeURIComponent(episode);
-            window.location.href = `read.html?title=${urlTitle}&ep=${urlEp}`;
-        }
-        
-        window.showToast = function(title) {
-            const toast = document.getElementById("toast");
-            if(currentLang === 'ms') {
-                toast.innerText = `❤️ ${title} ${langData['ms'].toast_add}`;
             } else {
-                toast.innerText = `❤️ ${title} ${langData['en'].toast_add}`;
+                listContainer.innerHTML = '<div style="padding:20px; color:#666; text-align:center">No episodes yet.</div>';
             }
-            toast.className = "show";
-            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
+
+            document.getElementById('epModal').classList.add('active');
         }
 
-        // --- LANGUAGE LOGIC (Wajib ada) ---
-        
-        const langData = {
-            en: {
-                nav_latest: "New Updates", nav_series: "My Series", nav_illustrations: "Illustrations", nav_shop: "Support Me", nav_about: "About Creator",
-                search_ph: "Search Episodes...", hero_tag: "Featured Original", hero_desc: "An original sci-fi webcomic by [Your Name]. Read the latest arc now!",
-                sec_fresh: "Latest Episodes", btn_viewall: "All Episodes", msg_noresult: "No episodes found :(",
-                lang_label: "Language <b>EN</b>", toast_add: "Added to Liked!", toast_view: "Showing All Episodes"
-            },
-            ms: {
-                nav_latest: "Kemas Kini", nav_series: "Siri Saya", nav_illustrations: "Ilustrasi", nav_shop: "Sokong Saya", nav_about: "Tentang Penulis",
-                search_ph: "Cari Episod...", hero_tag: "Karya Original", hero_desc: "Webkomik sains fiksyen original oleh [Nama Anda]. Baca sekarang!",
-                sec_fresh: "Episod Terkini", btn_viewall: "Semua Episod", msg_noresult: "Tiada episod dijumpai :(",
-                lang_label: "Bahasa <b>MY</b>", toast_add: "Disukai!", toast_view: "Menunjukkan Semua Episod"
-            }
-        };
+        window.closeModal = function() {
+            document.getElementById('epModal').classList.remove('active');
+        }
 
-        let currentLang = 'en';
-
-        window.toggleLangMenu = function() {
-            document.getElementById('langMenu').classList.toggle('show');
-        }
-        window.onclick = function(event) {
-            if (!event.target.matches('.lang-btn') && !event.target.matches('.lang-btn *')) {
-                document.getElementById('langMenu').classList.remove('show');
-            }
-        }
-        window.changeLang = function(lang) {
-            currentLang = lang;
-            const elements = document.querySelectorAll('[data-lang-key]');
-            elements.forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                if(langData[lang][key]) el.innerHTML = langData[lang][key];
-            });
-            const inputs = document.querySelectorAll('[data-lang-placeholder]');
-            inputs.forEach(el => {
-                const key = el.getAttribute('data-lang-placeholder');
-                if(langData[lang][key]) el.placeholder = langData[lang][key];
-            });
-            document.getElementById('currentLangLabel').innerHTML = langData[lang].lang_label;
-            document.getElementById('opt_en').classList.remove('active');
-            document.getElementById('opt_ms').classList.remove('active');
-            document.getElementById('opt_' + lang).classList.add('active');
-        }
-        
-        window.resetFilter = function() {
-            searchInput.value = '';
-            // Panggil balik onValue trigger secara manual atau biar user refresh
-            // Untuk simple, kita set balik data dari window.allComicsData
-            if(window.allComicsData) {
-                 container.innerHTML = '';
-                 window.allComicsData.forEach(c => {
-                    container.innerHTML += `
-                        <div class="card" onclick="openComic('${c.title}', '${c.ep}')">
-                            <div class="card-img-wrap">
-                                <img src="${c.img}" alt="${c.title}">
-                                <button class="love-btn" onclick="event.stopPropagation(); showToast('${c.title}')"><i class="fas fa-heart"></i></button>
-                            </div>
-                            <div class="card-info">
-                                <h3 class="card-title">${c.title}</h3>
-                                <div class="card-meta"><span><i class="far fa-file-alt" style="color:var(--accent)"></i> ${c.ep}</span></div>
-                            </div>
-                        </div>`;
-                 });
-            }
-            expandSearch(false);
-            const toast = document.getElementById("toast");
-            toast.innerText = langData[currentLang].toast_view;
-            toast.className = "show";
-            setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
-        }
+        // Tutup modal kalau klik luar kotak
+        document.getElementById('epModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('epModal')) closeModal();
+        });
 
     </script>
 </body>
