@@ -12,7 +12,7 @@
         * { box-sizing: border-box; }
         body { margin: 0; padding: 0; font-family: 'Roboto Condensed', sans-serif; background-color: var(--bg-body); color: var(--text-main); background-image: radial-gradient(rgba(255,255,255,0.1) 1.5px, transparent 1.5px); background-size: 24px 24px; min-height: 100vh; }
         
-        /* HEADER & HERO KEKAL SAMA (Ringkaskan CSS untuk jimat ruang chat) */
+        /* HEADER & HERO KEKAL SAMA */
         .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(10, 10, 10, 0.95); border-bottom: 2px solid var(--accent); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
         .logo { font-family: 'Teko', sans-serif; font-size: 2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; }
         .logo span { color: var(--accent); }
@@ -26,15 +26,30 @@
         .section-title { font-family: 'Teko'; font-size: 2rem; color: var(--accent); margin: 0; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 25px; }
         
-        /* CARD STYLE (COVER UTAMA) */
+        /* --- CARD STYLE (DIBETULKAN UNTUK FULL COVER) --- */
         .card { background: var(--bg-card); border: 1px solid #333; border-radius: 8px; overflow: hidden; transition: 0.3s; position: relative; cursor: pointer; }
         .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0px 5px 15px rgba(255, 102, 0, 0.2); }
-        .card-img-wrap { height: 280px; overflow: hidden; position: relative; }
-        .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: 0.3s; }
-        .card:hover .card-img-wrap img { transform: scale(1.1); }
+        
+        .card-img-wrap { 
+            height: 350px; /* Tinggi ditingkatkan supaya cover muat cantik */
+            overflow: hidden; 
+            position: relative; 
+            background: #222; /* Background gelap jika ratio gambar tak ngam */
+        }
+        .card-img-wrap img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; /* PENTING: Tunjuk SEMUA gambar, jangan crop */
+            object-position: center; 
+            transition: 0.3s; 
+        }
+        .card:hover .card-img-wrap img { transform: scale(1.05); }
+        
         .card-info { padding: 15px; }
-        .card-title { font-family: 'Teko'; font-size: 1.6rem; margin: 0 0 5px 0; color: #fff; line-height: 1.1; }
-        .card-meta { font-size: 0.9rem; color: var(--text-muted); display: flex; justify-content: space-between; }
+        .card-title { font-family: 'Teko'; font-size: 1.6rem; margin: 0; color: #fff; line-height: 1.1; }
+        .card-author { color: #888; font-size: 0.9rem; margin: 0 0 10px 0; font-style: italic; }
+        
+        .card-meta { font-size: 0.9rem; color: var(--text-muted); display: flex; justify-content: space-between; border-top: 1px solid #333; padding-top: 10px; }
         .ep-badge { background: var(--accent); color: #000; padding: 2px 8px; font-weight: bold; border-radius: 4px; font-size: 0.8rem; }
 
         /* --- MODAL (POPUP EPISOD) --- */
@@ -60,7 +75,7 @@
             .navbar { flex-direction: column; gap: 10px; }
             .nav-links { display: none; }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .card-img-wrap { height: 220px; }
+            .card-img-wrap { height: 250px; } /* Mobile pun tinggi sikit */
         }
     </style>
 </head>
@@ -114,7 +129,7 @@
 
         const grid = document.getElementById('series-grid');
 
-        // BACA DATA 'SERIES' (Bukan lagi 'episodes')
+        // BACA DATA 'SERIES'
         const seriesRef = ref(db, 'series');
 
         onValue(seriesRef, (snapshot) => {
@@ -126,27 +141,32 @@
                 return;
             }
 
-            // Convert object to array & Sort by last updated
+            // Convert object to array & Sort
             const seriesList = Object.keys(data).map(key => {
                 return { id: key, ...data[key] };
             });
             seriesList.sort((a, b) => b.last_updated - a.last_updated);
 
             seriesList.forEach(s => {
-                // Kira berapa episod ada
                 const epCount = s.episodes ? Object.keys(s.episodes).length : 0;
                 
+                // AMBIL DATA AUTHOR
+                const authorName = s.author ? s.author : "Unknown Author";
+
                 // Buat Kad
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.onclick = () => openModal(s); // Bila tekan, buka modal
+                card.onclick = () => openModal(s);
 
+                // UPDATE HTML KAD (CSS updated: object-fit: contain)
                 card.innerHTML = `
                     <div class="card-img-wrap">
                         <img src="${s.cover}" alt="${s.title}">
                     </div>
                     <div class="card-info">
                         <h3 class="card-title">${s.title}</h3>
+                        <p class="card-author">By: ${authorName}</p>
+                        
                         <div class="card-meta">
                             <span class="ep-badge">${epCount} EPISODES</span>
                             <span>UPDATED</span>
@@ -157,24 +177,41 @@
             });
         });
 
-        // --- MODAL LOGIC ---
+        // --- MODAL LOGIC (DENGAN COVER DI ATAS) ---
         window.openModal = function(seriesData) {
+            
+            // 1. Set Tajuk Modal
             document.getElementById('modalTitle').innerText = seriesData.title;
+            
             const listContainer = document.getElementById('modalList');
-            listContainer.innerHTML = '';
+            listContainer.innerHTML = ''; // Kosongkan list dulu
 
-            if (seriesData.episodes) {
-                // Convert episod ke array & Sort (Ep 1, Ep 2...)
-                const episodes = Object.keys(seriesData.episodes).map(k => seriesData.episodes[k]);
+            // 2. TAMBAH GAMBAR COVER (Modal pun guna full size contain)
+            if(seriesData.cover) {
+                const coverImg = document.createElement('img');
+                coverImg.src = seriesData.cover;
                 
-                // Sort simple ikut nama (Ep 1 < Ep 2)
+                // Style supaya gambar nampak cantik dalam modal
+                coverImg.style.width = "100%";
+                coverImg.style.height = "auto"; // Auto height supaya full cover nampak
+                coverImg.style.maxHeight = "300px";
+                coverImg.style.objectFit = "contain"; // Full cover
+                coverImg.style.backgroundColor = "#000";
+                coverImg.style.borderRadius = "0 0 10px 10px";
+                coverImg.style.marginBottom = "20px";
+                coverImg.style.borderBottom = "2px solid #ff6600";
+                
+                listContainer.appendChild(coverImg);
+            }
+
+            // 3. Masukkan Senarai Episod (Logik asal kekal)
+            if (seriesData.episodes) {
+                const episodes = Object.keys(seriesData.episodes).map(k => seriesData.episodes[k]);
                 episodes.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
 
                 episodes.forEach(ep => {
                     const link = document.createElement('a');
                     link.className = 'episode-item';
-                    
-                    // Link ke Read page (bawa Tajuk & Nama Episod)
                     const urlTitle = encodeURIComponent(seriesData.title);
                     const urlEp = encodeURIComponent(ep.name);
                     link.href = `read.html?title=${urlTitle}&ep=${urlEp}`;
@@ -186,7 +223,12 @@
                     listContainer.appendChild(link);
                 });
             } else {
-                listContainer.innerHTML = '<div style="padding:20px; color:#666; text-align:center">No episodes yet.</div>';
+                const msg = document.createElement('div');
+                msg.innerHTML = "No episodes yet.";
+                msg.style.padding = "20px";
+                msg.style.textAlign = "center";
+                msg.style.color = "#666";
+                listContainer.appendChild(msg);
             }
 
             document.getElementById('epModal').classList.add('active');
@@ -196,7 +238,6 @@
             document.getElementById('epModal').classList.remove('active');
         }
 
-        // Tutup modal kalau klik luar kotak
         document.getElementById('epModal').addEventListener('click', (e) => {
             if (e.target === document.getElementById('epModal')) closeModal();
         });
