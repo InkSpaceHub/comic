@@ -4,225 +4,75 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reading Comic | INK SPACE</title>
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
-        /* --- TEMA PREMIUM (SAMA DENGAN MAIN PAGE) --- */
-        :root {
-            --bg-body: #050505;
-            --bg-card: #141414;
-            --accent: #ff6600;
-            --text-main: #ffffff;
-            --text-muted: #888888;
-            --border: 1px solid #333;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0; padding: 0;
-            font-family: 'Roboto Condensed', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            background-image: radial-gradient(rgba(255,255,255,0.05) 1.5px, transparent 1.5px);
-            background-size: 24px 24px;
-        }
-
-        /* --- HEADER (Mini Version) --- */
-        .navbar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 30px;
-            background: rgba(5, 5, 5, 0.95);
-            border-bottom: 2px solid var(--accent);
-            position: sticky; top: 0; z-index: 999;
-            transition: top 0.3s;
-        }
-        .navbar.hidden { top: -80px; }
-
-        .logo { font-family: 'Teko', sans-serif; font-size: 1.8rem; color: #fff; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; }
+        /* CSS SAMA MACAM SEBELUM NI, CUMA TAMBAH STYLE UNTUK PAGES */
+        :root { --bg-body: #050505; --accent: #ff6600; --text-main: #ffffff; }
+        body { margin: 0; padding: 0; font-family: 'Roboto Condensed', sans-serif; background-color: var(--bg-body); color: var(--text-main); }
+        
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 30px; background: rgba(5, 5, 5, 0.95); border-bottom: 2px solid var(--accent); position: sticky; top: 0; z-index: 999; }
+        .logo { font-family: 'Teko', sans-serif; font-size: 1.8rem; color: #fff; text-decoration: none; }
         .logo span { color: var(--accent); }
+        .nav-controls a { color: #ccc; margin-left: 20px; text-decoration: none; }
 
-        .nav-controls a { color: #ccc; margin-left: 20px; text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
-        .nav-controls a:hover { color: var(--accent); }
+        .reader-toolbar { background: #111; padding: 10px; display: flex; justify-content: center; gap: 15px; border-bottom: 1px solid #333; }
+        .chapter-select { background: #222; color: #fff; padding: 8px; border: 1px solid #444; border-radius: 4px; }
+        .nav-btn { background: #222; color: #fff; border: 1px solid #444; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
+        .nav-btn.disabled { opacity: 0.5; pointer-events: none; }
 
-        /* --- TOOLBAR --- */
-        .reader-toolbar {
-            background: #111;
-            padding: 10px 20px;
-            display: flex; justify-content: center; align-items: center; gap: 15px;
-            border-bottom: 1px solid #333;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        .chapter-select {
-            background: #222; color: #fff; border: 1px solid #444; padding: 8px 15px; border-radius: 4px;
-            font-family: 'Roboto Condensed'; font-weight: bold; cursor: pointer; outline: none;
-        }
-        .chapter-select:focus { border-color: var(--accent); }
-
-        .nav-btn {
-            background: #222; color: #fff; border: 1px solid #444; padding: 8px 15px;
-            cursor: pointer; border-radius: 4px; transition: 0.2s;
-            display: flex; align-items: center; gap: 5px;
-        }
-        .nav-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
-        .nav-btn.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-
-        .focus-btn { background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted); }
-        .focus-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(255, 102, 0, 0.1); }
-
-        /* --- READER AREA --- */
-        .reader-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #000;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            min-height: 100vh;
-        }
-
-        .comic-page {
-            width: 100%;
-            display: block;
-            border: none; margin: 0; padding: 0;
-            min-height: 400px;
-            background: #111;
+        /* AREA BACA */
+        .reader-container { max-width: 800px; margin: 0 auto; background: #000; min-height: 100vh; }
+        
+        /* CLASS UNTUK SETIAP PAGE - PENTING! */
+        .comic-page { 
+            width: 100%; 
+            display: block; /* Hilang gap */
+            margin: 0; 
+            padding: 0;
+            border: none;
         }
         
-        .loading-text {
-            text-align: center; padding: 50px; color: #888;
-        }
-
-        /* --- BOTTOM INFO --- */
-        .bottom-section { max-width: 800px; margin: 40px auto; padding: 20px; }
-
-        .engagement-box {
-            text-align: center; margin-bottom: 40px; padding: 30px;
-            background: var(--bg-card); border: 1px solid #333; border-radius: 8px;
-        }
-
-        .big-next-btn {
-            display: inline-block; background: var(--accent); color: #000;
-            padding: 15px 40px; font-family: 'Teko'; font-size: 1.5rem; font-weight: bold;
-            text-decoration: none; border-radius: 4px; margin-top: 20px;
-            box-shadow: 0 0 15px rgba(255,102,0,0.4); transition: 0.2s;
-        }
-        .big-next-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(255,102,0,0.6); }
-
-        .comment-area { margin-top: 30px; text-align: left; }
-        .comment-header { font-family: 'Teko'; font-size: 2rem; border-bottom: 2px solid var(--accent); display: inline-block; margin-bottom: 20px; }
-        
-        .user-comment {
-            display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid #222; padding-bottom: 15px;
-        }
-        .avatar { width: 40px; height: 40px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); }
-        .comment-body h4 { margin: 0; font-size: 0.9rem; color: var(--accent); }
-        .comment-body p { margin: 5px 0 0 0; color: #ccc; font-size: 0.95rem; }
-
-        /* --- UTILITY --- */
-        .back-to-top {
-            position: fixed; bottom: 30px; right: 30px;
-            background: var(--accent); color: #000; width: 40px; height: 40px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; opacity: 0; transition: 0.3s;
-        }
-        .back-to-top.visible { opacity: 1; }
-
-        /* --- MOBILE RESPONSIVE --- */
-        @media (max-width: 768px) {
-            .navbar { padding: 10px 15px; }
-            .logo { font-size: 1.5rem; }
-            .nav-controls a { display: none; }
-            .nav-controls a:first-child { display: inline-block; font-size: 1.2rem; }
-            .reader-toolbar { padding: 10px; gap: 5px; }
-            .nav-btn { padding: 8px 10px; font-size: 0.9rem; }
-            .nav-btn span { display: none; }
-            .chapter-select { width: 100%; font-size: 0.9rem; }
-            .reader-container h1 { font-size: 2rem !important; }
-            .reader-container p { font-size: 1rem !important; }
-            .bottom-section { padding: 15px; margin: 20px auto; }
-            .big-next-btn { width: 100%; padding: 15px; font-size: 1.3rem; }
-            .back-to-top { bottom: 20px; right: 20px; width: 35px; height: 35px; }
-        }
-
+        .loading-text { text-align: center; padding: 50px; color: #888; }
+        .bottom-section { padding: 40px; text-align: center; }
+        .big-next-btn { background: var(--accent); color: #000; padding: 15px 40px; font-family: 'Teko'; font-size: 1.5rem; text-decoration: none; display: inline-block; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar" id="mainHeader">
+    <nav class="navbar">
         <a href="index.html" class="logo">INK<span>SPACE</span></a>
         <div class="nav-controls">
-            <a href="index.html"><i class="fas fa-home"></i> Home</a>
-            <a href="#"><i class="fas fa-list"></i> Series List</a>
-            <a href="#"><i class="fas fa-user"></i> Profile</a>
+            <a href="index.html">Home</a>
         </div>
     </nav>
 
     <div class="reader-toolbar">
-        <button class="nav-btn disabled"><i class="fas fa-chevron-left"></i> <span>Prev</span></button>
-        
-        <select class="chapter-select" id="chapterSelect">
-            <option>Loading...</option>
-        </select>
-
-        <button class="nav-btn"><span>Next</span> <i class="fas fa-chevron-right"></i></button>
-
-        <button class="nav-btn focus-btn" onclick="toggleFocus()" title="Focus Mode">
-            <i class="fas fa-lightbulb"></i>
-        </button>
+        <button class="nav-btn disabled" id="btnPrev">Prev</button>
+        <select class="chapter-select" id="chapterSelect"><option>Loading...</option></select>
+        <button class="nav-btn disabled" id="btnNext">Next</button>
     </div>
 
     <div class="reader-container" id="readerCanvas">
-        
-        <div style="padding: 40px 20px; text-align: center; color: #fff;">
-            <h1 id="comicTitle" style="font-family: 'Teko'; font-size: 3rem; margin:0; line-height:1;">LOADING...</h1>
-            <p id="comicEp" style="color: var(--accent); margin:0; font-size: 1.2rem; font-weight:bold;">...</p>
+        <div style="padding: 40px 20px; text-align: center;">
+            <h1 id="comicTitle" style="font-family: 'Teko'; font-size: 3rem; margin:0;">LOADING...</h1>
+            <p id="comicEp" style="color: var(--accent); margin:0; font-size: 1.2rem;">...</p>
         </div>
 
         <div id="pagesContainer">
              <div class="loading-text">Loading Pages...</div>
         </div>
         
-        <div style="padding: 60px 20px; text-align: center;">
-            <p style="color:#555;">- END OF EPISODE -</p>
+        <div class="bottom-section">
+            <h3>End of Episode</h3>
+            <a href="index.html" class="big-next-btn">BACK TO SERIES</a>
         </div>
-
-    </div>
-
-    <div class="bottom-section">
-        <div class="engagement-box">
-            <h3 style="font-family:'Teko'; font-size:2rem; margin:0;">Did you enjoy this chapter?</h3>
-            <p style="color:#ccc;">Don't forget to like and support the creator!</p>
-            <div style="margin: 20px 0;">
-                <button class="nav-btn" onclick="this.style.color='#ff3300'"><i class="fas fa-heart"></i> Like</button>
-                <button class="nav-btn"><i class="fas fa-share-alt"></i> Share</button>
-            </div>
-            <a href="index.html" class="big-next-btn">READ MORE EPISODES <i class="fas fa-arrow-right"></i></a>
-        </div>
-
-        <div class="comment-area">
-            <h2 class="comment-header">Comments</h2>
-            <div style="display:flex; gap:10px; margin-bottom:30px;">
-                <div class="avatar"><i class="fas fa-user"></i></div>
-                <input type="text" placeholder="Write a comment..." style="width:100%; background:#222; border:1px solid #444; padding:10px; color:#fff;">
-            </div>
-            <div class="user-comment">
-                <div class="avatar">A</div>
-                <div class="comment-body"><h4>Ali Gamer</h4><p>Fuh, style lukisan dia memang gempak!</p></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="back-to-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">
-        <i class="fas fa-arrow-up"></i>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        // CONFIG (PROJECT: inkspace-c9dca)
         const firebaseConfig = {
             apiKey: "AIzaSyDqDvRp1IGmhC5_EtQ8I5lBBfkPOaUBR-A",
             authDomain: "inkspace-c9dca.firebaseapp.com",
@@ -236,109 +86,90 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // --- URL PARAMETERS ---
         const urlParams = new URLSearchParams(window.location.search);
-        const targetTitle = urlParams.get('title'); // Contoh: "Dream Walker"
-        const targetEp = urlParams.get('ep');       // Contoh: "Ep. 01"
+        const targetTitle = urlParams.get('title');
+        const targetEp = urlParams.get('ep');
 
-        // --- DOM ELEMENTS ---
         const titleEl = document.getElementById('comicTitle');
         const epEl = document.getElementById('comicEp');
         const pagesContainer = document.getElementById('pagesContainer');
         const selectBox = document.getElementById('chapterSelect');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
 
         if(targetTitle && targetEp) {
-            
-            // Paparkan Tajuk sementara loading
             titleEl.innerText = targetTitle.toUpperCase();
             epEl.innerText = targetEp;
-            document.title = `Reading: ${targetTitle} - ${targetEp}`;
 
-            // Cari dalam Database (Folder SERIES)
-            const seriesRef = ref(db, 'series');
-            
-            onValue(seriesRef, (snapshot) => {
+            onValue(ref(db, 'series'), (snapshot) => {
                 const data = snapshot.val();
-                
                 if (data) {
                     let foundSeries = null;
-                    let foundEpData = null;
-
-                    // 1. Cari Siri yang betul (Loop semua siri)
                     Object.keys(data).forEach(key => {
-                        // Bandingkan title dalam database dengan title kat URL
-                        if(data[key].title === targetTitle) {
-                            foundSeries = data[key];
-                        }
+                        if(data[key].title === targetTitle) foundSeries = data[key];
                     });
 
-                    // 2. Kalau siri jumpa, baru cari episod dalam siri tu
                     if (foundSeries && foundSeries.episodes) {
+                        // Kumpul semua episod
                         const allEps = [];
-                        
+                        let currentEpData = null;
+
                         Object.keys(foundSeries.episodes).forEach(epKey => {
-                            const epData = foundSeries.episodes[epKey];
-                            allEps.push(epData);
-                            
-                            // Check kalau ini episod yang user nak baca
-                            if (epData.name === targetEp) {
-                                foundEpData = epData;
-                            }
+                            const ep = foundSeries.episodes[epKey];
+                            allEps.push(ep);
+                            if(ep.name === targetEp) currentEpData = ep;
                         });
 
-                        // 3. Papar Gambar (Kalau episod jumpa)
-                        if (foundEpData) {
-                            pagesContainer.innerHTML = `<img src="${foundEpData.img}" class="comic-page" alt="Page">`;
+                        // 1. RENDER PAGES (LOOPING 18 PAGE)
+                        if(currentEpData) {
+                            pagesContainer.innerHTML = ""; // Kosongkan
+                            
+                            // Check: Adakah ia array (format baru) atau string (format lama)?
+                            if(Array.isArray(currentEpData.pages)) {
+                                // FORMAT BARU (Banyak Page)
+                                currentEpData.pages.forEach(pageSrc => {
+                                    const img = document.createElement('img');
+                                    img.src = pageSrc;
+                                    img.className = "comic-page";
+                                    img.loading = "lazy"; // Supaya tak berat
+                                    pagesContainer.appendChild(img);
+                                });
+                            } else if (currentEpData.img) {
+                                // FALLBACK FORMAT LAMA (1 Page)
+                                pagesContainer.innerHTML = `<img src="${currentEpData.img}" class="comic-page">`;
+                            }
                         } else {
-                            pagesContainer.innerHTML = `<div class="loading-text">Maaf, episod ini belum diupload.</div>`;
+                            pagesContainer.innerHTML = "<div class='loading-text'>Episode not found.</div>";
                         }
 
-                        // 4. Isi Dropdown Menu
-                        selectBox.innerHTML = "";
-                        // Sort episod ikut abjad (Ep 1 < Ep 2)
+                        // 2. SETUP NAVIGASI
                         allEps.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
-                        
+                        selectBox.innerHTML = "";
+                        const currentIndex = allEps.findIndex(e => e.name === targetEp);
+
                         allEps.forEach(ep => {
                             const isSelected = (ep.name === targetEp) ? "selected" : "";
                             const url = `read.html?title=${encodeURIComponent(targetTitle)}&ep=${encodeURIComponent(ep.name)}`;
                             selectBox.innerHTML += `<option value="${url}" ${isSelected}>${ep.name}</option>`;
                         });
 
-                    } else {
-                        pagesContainer.innerHTML = `<div class="loading-text">Siri dijumpai, tapi tiada episod.</div>`;
+                        btnPrev.classList.toggle('disabled', currentIndex <= 0);
+                        if(currentIndex > 0) {
+                            btnPrev.onclick = () => location.href = `read.html?title=${encodeURIComponent(targetTitle)}&ep=${encodeURIComponent(allEps[currentIndex-1].name)}`;
+                        }
+
+                        btnNext.classList.toggle('disabled', currentIndex >= allEps.length - 1);
+                        if(currentIndex < allEps.length - 1) {
+                            btnNext.onclick = () => location.href = `read.html?title=${encodeURIComponent(targetTitle)}&ep=${encodeURIComponent(allEps[currentIndex+1].name)}`;
+                        }
                     }
-                } else {
-                    pagesContainer.innerHTML = `<div class="loading-text">Database Kosong.</div>`;
                 }
             });
-
-        } else {
-            // Kalau URL tak lengkap
-            titleEl.innerText = "NO COMIC SELECTED";
-            pagesContainer.innerHTML = `<div class="loading-text"><a href='index.html' style='color:orange'>Go Home</a> to select a comic.</div>`;
         }
 
-        // Logic Tukar Episod Bila Pilih Dropdown
         selectBox.addEventListener('change', function() {
-            if(this.value) {
-                window.location.href = this.value; // Refresh page ke episod baru
-            }
+            if(this.value) window.location.href = this.value;
         });
-
-        // UI Logic (Focus & Scroll)
-        window.toggleFocus = function() {
-            document.getElementById('mainHeader').classList.toggle('hidden');
-            const btn = document.querySelector('.focus-btn');
-            btn.classList.toggle('active');
-            document.body.style.background = btn.classList.contains('active') ? "#000" : "";
-        }
-
-        window.addEventListener('scroll', function() {
-            const btn = document.querySelector('.back-to-top');
-            if (window.scrollY > 500) btn.classList.add('visible');
-            else btn.classList.remove('visible');
-        });
-
     </script>
 </body>
 </html>
