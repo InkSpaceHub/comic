@@ -86,8 +86,8 @@
             width: 100%;
             display: block;
             border: none; margin: 0; padding: 0;
-            min-height: 400px; /* Placeholder height loading */
-            background: #111; /* Loading color */
+            min-height: 400px;
+            background: #111;
         }
         
         .loading-text {
@@ -219,11 +219,10 @@
     </div>
 
     <script type="module">
-        // 1. IMPORT REALTIME DB
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        // 2. CONFIG BARU (Project: inkspace-c9dca)
+        // CONFIG (PROJECT: inkspace-c9dca)
         const firebaseConfig = {
             apiKey: "AIzaSyDqDvRp1IGmhC5_EtQ8I5lBBfkPOaUBR-A",
             authDomain: "inkspace-c9dca.firebaseapp.com",
@@ -237,88 +236,96 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // 3. TANGKAP URL PARAMETER (?title=...&ep=...)
+        // --- URL PARAMETERS ---
         const urlParams = new URLSearchParams(window.location.search);
         const targetTitle = urlParams.get('title'); // Contoh: "Dream Walker"
         const targetEp = urlParams.get('ep');       // Contoh: "Ep. 01"
 
+        // --- DOM ELEMENTS ---
         const titleEl = document.getElementById('comicTitle');
         const epEl = document.getElementById('comicEp');
         const pagesContainer = document.getElementById('pagesContainer');
         const selectBox = document.getElementById('chapterSelect');
 
-        // 4. LOGIC CARI DATA
         if(targetTitle && targetEp) {
             
-            // Set Tajuk dulu sementara loading
+            // Paparkan Tajuk sementara loading
             titleEl.innerText = targetTitle.toUpperCase();
             epEl.innerText = targetEp;
-            document.title = `Reading: ${targetTitle} - ${targetEp} | INK SPACE`;
+            document.title = `Reading: ${targetTitle} - ${targetEp}`;
 
-            // Cari dalam Database
-            const comicsRef = ref(db, 'episodes');
+            // Cari dalam Database (Folder SERIES)
+            const seriesRef = ref(db, 'series');
             
-            onValue(comicsRef, (snapshot) => {
+            onValue(seriesRef, (snapshot) => {
                 const data = snapshot.val();
                 
                 if (data) {
-                    let foundComic = null;
-                    const allEpisodes = [];
+                    let foundSeries = null;
+                    let foundEpData = null;
 
-                    // Loop semua data untuk cari yang PADAN dengan URL
+                    // 1. Cari Siri yang betul (Loop semua siri)
                     Object.keys(data).forEach(key => {
-                        const c = data[key];
-                        // Kumpul semua episod untuk dropdown
-                        if(c.title === targetTitle) {
-                             allEpisodes.push(c);
-                        }
-                        // Check kalau ini episod yang kita nak
-                        if (c.title === targetTitle && c.ep === targetEp) {
-                            foundComic = c;
+                        // Bandingkan title dalam database dengan title kat URL
+                        if(data[key].title === targetTitle) {
+                            foundSeries = data[key];
                         }
                     });
 
-                    // Kalau jumpa komik tu
-                    if (foundComic) {
-                        // Paparkan Gambar
-                        pagesContainer.innerHTML = `<img src="${foundComic.img}" class="comic-page" alt="Page">`;
-                    } else {
-                        pagesContainer.innerHTML = `<div class="loading-text">Error: Comic Image Not Found in Database.</div>`;
-                    }
-
-                    // Update Dropdown Menu (Senarai Episod)
-                    if(allEpisodes.length > 0) {
-                        selectBox.innerHTML = ""; // Kosongkan
-                        // Sort episod (A-Z)
-                        allEpisodes.sort((a,b) => a.ep.localeCompare(b.ep));
+                    // 2. Kalau siri jumpa, baru cari episod dalam siri tu
+                    if (foundSeries && foundSeries.episodes) {
+                        const allEps = [];
                         
-                        allEpisodes.forEach(ep => {
-                            const isSelected = (ep.ep === targetEp) ? "selected" : "";
-                            // Value dropdown ialah URL ke episod tersebut
-                            const url = `read.html?title=${encodeURIComponent(ep.title)}&ep=${encodeURIComponent(ep.ep)}`;
-                            selectBox.innerHTML += `<option value="${url}" ${isSelected}>${ep.ep}</option>`;
+                        Object.keys(foundSeries.episodes).forEach(epKey => {
+                            const epData = foundSeries.episodes[epKey];
+                            allEps.push(epData);
+                            
+                            // Check kalau ini episod yang user nak baca
+                            if (epData.name === targetEp) {
+                                foundEpData = epData;
+                            }
                         });
-                    }
 
+                        // 3. Papar Gambar (Kalau episod jumpa)
+                        if (foundEpData) {
+                            pagesContainer.innerHTML = `<img src="${foundEpData.img}" class="comic-page" alt="Page">`;
+                        } else {
+                            pagesContainer.innerHTML = `<div class="loading-text">Maaf, episod ini belum diupload.</div>`;
+                        }
+
+                        // 4. Isi Dropdown Menu
+                        selectBox.innerHTML = "";
+                        // Sort episod ikut abjad (Ep 1 < Ep 2)
+                        allEps.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
+                        
+                        allEps.forEach(ep => {
+                            const isSelected = (ep.name === targetEp) ? "selected" : "";
+                            const url = `read.html?title=${encodeURIComponent(targetTitle)}&ep=${encodeURIComponent(ep.name)}`;
+                            selectBox.innerHTML += `<option value="${url}" ${isSelected}>${ep.name}</option>`;
+                        });
+
+                    } else {
+                        pagesContainer.innerHTML = `<div class="loading-text">Siri dijumpai, tapi tiada episod.</div>`;
+                    }
                 } else {
-                    pagesContainer.innerHTML = `<div class="loading-text">Database Empty.</div>`;
+                    pagesContainer.innerHTML = `<div class="loading-text">Database Kosong.</div>`;
                 }
             });
 
         } else {
-            // Kalau takde data kat URL
+            // Kalau URL tak lengkap
             titleEl.innerText = "NO COMIC SELECTED";
             pagesContainer.innerHTML = `<div class="loading-text"><a href='index.html' style='color:orange'>Go Home</a> to select a comic.</div>`;
         }
 
-        // Logic Tukar Episod Guna Dropdown
+        // Logic Tukar Episod Bila Pilih Dropdown
         selectBox.addEventListener('change', function() {
             if(this.value) {
                 window.location.href = this.value; // Refresh page ke episod baru
             }
         });
 
-        // 5. UI LOGIC LAIN
+        // UI Logic (Focus & Scroll)
         window.toggleFocus = function() {
             document.getElementById('mainHeader').classList.toggle('hidden');
             const btn = document.querySelector('.focus-btn');
