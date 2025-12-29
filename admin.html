@@ -3,90 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Upload Comic (Realtime DB)</title>
+    <title>Admin - Studio Upload</title>
     <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600&display=swap" rel="stylesheet">
     <style>
         body { background: #111; color: #fff; font-family: sans-serif; padding: 20px; text-align: center; }
-        input, button { padding: 10px; margin: 10px; width: 80%; max-width: 400px; display: block; margin: 10px auto; }
-        button { background: #ff6600; border: none; font-weight: bold; cursor: pointer; color: #000; }
-        .status { color: yellow; margin-top: 10px; font-weight: bold;}
+        .container { max-width: 500px; margin: 0 auto; background: #1a1a1a; padding: 20px; border-radius: 10px; border: 1px solid #333; }
+        input, button { padding: 12px; margin: 10px 0; width: 100%; display: block; box-sizing: border-box; }
+        label { text-align: left; display: block; margin-top: 15px; color: #ff6600; font-weight: bold; font-family: 'Teko'; font-size: 1.2rem; }
+        
+        input[type="text"] { background: #222; border: 1px solid #444; color: #fff; border-radius: 4px; }
+        button { background: #ff6600; border: none; font-weight: bold; cursor: pointer; color: #000; font-size: 1.1rem; }
+        button:hover { background: #ff8533; }
+        
+        .status { color: yellow; margin-top: 10px; font-weight: bold; }
+        .note { font-size: 0.8rem; color: #888; text-align: left; margin-bottom: 5px; }
+        hr { border-color: #333; margin: 20px 0; }
     </style>
 </head>
 <body>
-    <h1 style="font-family:'Teko'">UPLOAD NEW EPISODE</h1>
-    <p style="color:#aaa; font-size:0.9rem;">(Mode: Realtime Database - No CORS Setup Needed)</p>
+
+    <h1 style="font-family:'Teko'; font-size: 3rem; margin-bottom: 10px;">STUDIO DASHBOARD</h1>
     
-    <input type="text" id="title" placeholder="Comic Title (e.g. Dream Walker)">
-    <input type="text" id="episode" placeholder="Episode (e.g. Ep. 01)">
-    <p style="font-size:0.8rem; color:#888;">*Guna gambar bawah 1MB sahaja</p>
-    <input type="file" id="imageFile" accept="image/*">
-    
-    <button id="uploadBtn">UPLOAD NOW</button>
-    <p class="status" id="statusMsg"></p>
+    <div class="container">
+        
+        <label>1. NAMA SIRI / KOMIK</label>
+        <p class="note">*Wajib sama setiap kali upload episod baru (cth: "Dream Walker")</p>
+        <input type="text" id="seriesTitle" placeholder="Tajuk Komik...">
+
+        <label>2. GAMBAR COVER (Thumbnail Utama)</label>
+        <p class="note">*Upload sekali je pun okay. Kalau nak update cover baru, upload sini.</p>
+        <input type="file" id="coverFile" accept="image/*">
+
+        <hr>
+
+        <label>3. NAMA EPISOD</label>
+        <input type="text" id="epName" placeholder="Contoh: Episod 01 - Permulaan">
+
+        <label>4. GAMBAR EPISOD (Isi Kandungan)</label>
+        <p class="note">*Gambar memanjang ke bawah (Webtoon style)</p>
+        <input type="file" id="epFile" accept="image/*">
+
+        <br>
+        <button id="uploadBtn">PUBLISH SEKARANG</button>
+        <p class="status" id="statusMsg"></p>
+
+    </div>
 
     <script type="module">
-        // 1. IMPORT (Kita guna Realtime Database sahaja)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getDatabase, ref, push, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { getDatabase, ref, update, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        // 2. CONFIG BARU AWAK (Project: inkspace-c9dca)
+        // CONFIG (PROJECT: inkspace-c9dca)
         const firebaseConfig = {
             apiKey: "AIzaSyDqDvRp1IGmhC5_EtQ8I5lBBfkPOaUBR-A",
             authDomain: "inkspace-c9dca.firebaseapp.com",
-            databaseURL: "https://inkspace-c9dca-default-rtdb.asia-southeast1.firebasedatabase.app", // Penting untuk Realtime DB
+            databaseURL: "https://inkspace-c9dca-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "inkspace-c9dca",
             storageBucket: "inkspace-c9dca.firebasestorage.app",
             messagingSenderId: "92054275710",
             appId: "1:92054275710:web:b5e13736d46d7143307a2f"
         };
 
-        // 3. INITIALIZE
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app); // Guna Realtime Database
+        const db = getDatabase(app);
 
-        // 4. FUNCTION UPLOAD
-        document.getElementById('uploadBtn').addEventListener('click', () => {
-            const title = document.getElementById('title').value;
-            const ep = document.getElementById('episode').value;
-            const file = document.getElementById('imageFile').files[0];
+        // Fungsi Helper: Tukar Gambar ke Base64 (Promise)
+        const convertToBase64 = (file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        };
+
+        // Fungsi Helper: Buat ID unik dari tajuk (contoh: "Dream Walker" -> "dream_walker")
+        const createSlug = (text) => {
+            return text.toLowerCase().replace(/ /g, "_").replace(/[^\w-]+/g, "");
+        };
+
+        document.getElementById('uploadBtn').addEventListener('click', async () => {
+            const title = document.getElementById('seriesTitle').value.trim();
+            const epName = document.getElementById('epName').value.trim();
+            const coverFile = document.getElementById('coverFile').files[0];
+            const epFile = document.getElementById('epFile').files[0];
             const status = document.getElementById('statusMsg');
 
-            if (!file || !title) return alert("Sila isi semua info!");
+            // Validation Mudah
+            if (!title) return alert("Wajib letak Tajuk Komik!");
+            if (!epName || !epFile) return alert("Wajib letak Nama Episod dan Gambar Episod!");
 
-            // Limit saiz 800KB (Sebab Realtime DB limit 1MB per record)
-            if (file.size > 800000) { 
-                return alert("File terlalu besar! Sila compress gambar jadi bawah 800KB.");
-            }
+            // Check Saiz
+            if (epFile.size > 800000) return alert("Gambar Episod terlalu besar! (Max 800KB)");
+            if (coverFile && coverFile.size > 800000) return alert("Gambar Cover terlalu besar! (Max 800KB)");
 
-            status.innerText = "Converting image...";
-
-            const reader = new FileReader();
-            reader.readAsDataURL(file); // Tukar gambar jadi kod text (Base64)
+            status.innerText = "Sedang memproses...";
             
-            reader.onload = function() {
-                const base64Image = reader.result;
+            try {
+                // 1. Generate ID untuk siri ni
+                const seriesId = createSlug(title);
                 
-                status.innerText = "Sending to Database...";
+                // 2. Prepare Data Update
+                const updates = {};
+                const timestamp = Date.now();
 
-                // Simpan terus ke database (Tak perlu Storage = Tak perlu CORS)
-                const newPostRef = push(ref(db, 'episodes'));
-                set(newPostRef, {
-                    title: title,
-                    ep: ep,
-                    img: base64Image,
-                    timestamp: Date.now()
-                })
-                .then(() => {
-                    status.innerText = "Success!";
-                    alert("Berjaya Upload!");
-                    location.reload();
-                })
-                .catch((error) => {
-                    console.error(error);
-                    status.innerText = "Error: " + error.message;
-                    alert("Error: " + error.message);
-                });
-            };
+                // A. Kalau ada Cover baru, update info siri utama
+                if (coverFile) {
+                    status.innerText = "Converting Cover...";
+                    const base64Cover = await convertToBase64(coverFile);
+                    
+                    // Simpan info utama siri
+                    updates[`series/${seriesId}/title`] = title;
+                    updates[`series/${seriesId}/cover`] = base64Cover;
+                    updates[`series/${seriesId}/last_updated`] = timestamp;
+                } else {
+                    // Kalau takde cover, just update timestamp & title (incase typo sebelum ni)
+                    updates[`series/${seriesId}/title`] = title;
+                    updates[`series/${seriesId}/last_updated`] = timestamp;
+                }
+
+                // B. Process Gambar Episod
+                status.innerText = "Converting Episode...";
+                const base64Ep = await convertToBase64(epFile);
+
+                // C. Generate ID baru untuk episod ni
+                const newEpKey = push(ref(db, `series/${seriesId}/episodes`)).key;
+
+                // D. Masukkan data episod dalam siri tu
+                updates[`series/${seriesId}/episodes/${newEpKey}`] = {
+                    name: epName,
+                    img: base64Ep,
+                    timestamp: timestamp
+                };
+
+                // 3. Hantar semua data sekali gus ke Database
+                status.innerText = "Uploading to Database...";
+                await update(ref(db), updates);
+
+                status.innerText = "BERJAYA!";
+                alert(`Berjaya publish ${epName} untuk siri ${title}!`);
+                location.reload();
+
+            } catch (error) {
+                console.error(error);
+                status.innerText = "Error: " + error.message;
+            }
         });
     </script>
 </body>
