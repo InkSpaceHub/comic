@@ -4,74 +4,170 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reading Comic | INK SPACE</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Rajdhani:wght@500;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        /* CSS SAMA MACAM SEBELUM NI, CUMA TAMBAH STYLE UNTUK PAGES */
-        :root { --bg-body: #050505; --accent: #ff6600; --text-main: #ffffff; }
-        body { margin: 0; padding: 0; font-family: 'Roboto Condensed', sans-serif; background-color: var(--bg-body); color: var(--text-main); }
-        
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 10px 30px; background: rgba(5, 5, 5, 0.95); border-bottom: 2px solid var(--accent); position: sticky; top: 0; z-index: 999; }
-        .logo { font-family: 'Teko', sans-serif; font-size: 1.8rem; color: #fff; text-decoration: none; }
-        .logo span { color: var(--accent); }
-        .nav-controls a { color: #ccc; margin-left: 20px; text-decoration: none; }
+        /* --- PREMIUM THEME --- */
+        :root { --bg-body: #050505; --bg-card: #121212; --bg-nav: rgba(10, 10, 10, 0.85); --accent: #ff6600; --accent-glow: rgba(255, 102, 0, 0.4); --text-main: #ffffff; --text-muted: #888888; --border: 1px solid #333; }
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Roboto Condensed', sans-serif; background-color: var(--bg-body); color: var(--text-main); background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; min-height: 100vh; }
 
-        .reader-toolbar { background: #111; padding: 10px; display: flex; justify-content: center; gap: 15px; border-bottom: 1px solid #333; }
-        .chapter-select { background: #222; color: #fff; padding: 8px; border: 1px solid #444; border-radius: 4px; }
-        .nav-btn { background: #222; color: #fff; border: 1px solid #444; padding: 8px 15px; cursor: pointer; border-radius: 4px; }
-        .nav-btn.disabled { opacity: 0.5; pointer-events: none; }
-
-        /* AREA BACA */
-        .reader-container { max-width: 800px; margin: 0 auto; background: #000; min-height: 100vh; }
+        /* HEADER */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: var(--bg-nav); border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .nav-left { display: flex; align-items: center; gap: 15px; }
+        .logo-img { height: 40px; width: auto; filter: drop-shadow(0 0 5px var(--accent)); }
+        .logo-text { font-family: 'Teko', sans-serif; font-size: 2.2rem; color: #fff; text-decoration: none; line-height: 1; margin-bottom: -4px; letter-spacing: 1px; }
+        .logo-text span { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .nav-right a, .login-btn { color: #ccc; text-decoration: none; font-weight: 700; font-size: 1rem; text-transform: uppercase; font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; transition: 0.3s; cursor: pointer; background: none; border: none; display: flex; align-items: center; gap: 8px;}
+        .nav-right a:hover, .login-btn:hover { color: var(--accent); }
         
-        /* CLASS UNTUK SETIAP PAGE - PENTING! */
-        .comic-page { 
-            width: 100%; 
-            display: block; /* Hilang gap */
-            margin: 0; 
-            padding: 0;
-            border: none;
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); }
+
+        /* TOOLBAR */
+        .reader-toolbar { background: #111; padding: 15px 20px; display: flex; justify-content: center; align-items: center; gap: 15px; border-bottom: 1px solid #333; box-shadow: 0 5px 15px rgba(0,0,0,0.5); position: sticky; top: 72px; z-index: 90; }
+        .chapter-select { background: #222; color: #fff; border: 1px solid #444; padding: 10px 15px; border-radius: 4px; font-family: 'Rajdhani', sans-serif; font-weight: bold; cursor: pointer; outline: none; min-width: 200px; }
+        .nav-btn { background: #222; color: #fff; border: 1px solid #444; padding: 10px 20px; cursor: pointer; border-radius: 4px; transition: 0.3s; font-family: 'Rajdhani', sans-serif; font-weight: bold; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+        .nav-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
+        .nav-btn.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+        /* CANVAS */
+        .reader-container { max-width: 850px; margin: 0 auto; background: #000; box-shadow: 0 0 100px rgba(0,0,0,0.8); min-height: 100vh; border-left: 1px solid #222; border-right: 1px solid #222; }
+        .comic-header { padding: 50px 20px; text-align: center; border-bottom: 1px solid #222; }
+        .comic-title { font-family: 'Teko'; font-size: 3.5rem; margin: 0; line-height: 1; text-transform: uppercase; letter-spacing: 2px; }
+        .comic-ep { color: var(--accent); margin: 5px 0 0 0; font-size: 1.5rem; font-family: 'Rajdhani'; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }
+        .comic-page { width: 100%; display: block; border: none; margin: 0; padding: 0; min-height: 400px; background: #080808; }
+        .loading-text { text-align: center; padding: 100px 20px; color: #666; font-family: 'Rajdhani'; font-size: 1.2rem; }
+
+        /* BOTTOM */
+        .bottom-section { max-width: 850px; margin: 0 auto; padding: 40px 20px; background: #0a0a0a; border: 1px solid #222; border-top: none; }
+        .engagement-box { text-align: center; padding: 40px; margin-bottom: 40px; background: rgba(255,255,255,0.03); border: 1px solid #333; border-radius: 12px; }
+        .engagement-box h3 { font-family: 'Teko'; font-size: 2.5rem; margin: 0; text-transform: uppercase; }
+        .engagement-box p { color: #888; margin-top: 5px; font-family: 'Rajdhani'; font-size: 1.1rem; }
+        
+        .action-buttons { display: flex; justify-content: center; gap: 20px; margin: 30px 0; }
+        .action-btn { background: transparent; border: 1px solid #444; color: #fff; padding: 10px 25px; border-radius: 50px; cursor: pointer; font-family: 'Rajdhani'; font-weight: bold; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .action-btn:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-3px); }
+        .action-btn.liked { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+
+        .big-next-btn { display: inline-block; background: var(--accent); color: #000; padding: 15px 50px; font-family: 'Teko'; font-size: 1.8rem; font-weight: bold; text-decoration: none; border-radius: 4px; margin-top: 20px; box-shadow: 0 0 20px rgba(255,102,0,0.3); transition: 0.3s; text-transform: uppercase; }
+        .big-next-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(255,102,0,0.6); color: #fff; }
+
+        /* COMMENTS */
+        .comment-area { margin-top: 50px; text-align: left; }
+        .comment-header { font-family: 'Teko'; font-size: 2rem; border-bottom: 2px solid var(--accent); display: inline-block; margin-bottom: 25px; padding-right: 20px; }
+        
+        .signin-notice { background: rgba(255, 102, 0, 0.1); border: 1px solid var(--accent); color: var(--accent); padding: 15px; text-align: center; border-radius: 8px; font-family: 'Rajdhani'; font-weight: bold; margin-bottom: 30px; display: block; }
+        
+        .comment-input-box { display: none; margin-bottom: 30px; }
+        .comment-input-box textarea { width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 4px; font-family: sans-serif; resize: vertical; min-height: 80px; }
+        .post-btn { background: var(--accent); color: #000; border: none; padding: 8px 20px; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 4px; }
+
+        .user-comment { display: flex; gap: 15px; margin-bottom: 25px; border-bottom: 1px solid #222; padding-bottom: 15px; }
+        .avatar { width: 45px; height: 45px; background: #222; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--accent); border: 1px solid #333; }
+        .avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .comment-body h4 { margin: 0; font-size: 1rem; color: #fff; font-family: 'Rajdhani'; }
+        .comment-body p { margin: 5px 0 0 0; color: #aaa; font-size: 0.95rem; line-height: 1.4; }
+        .comment-date { font-size: 0.75rem; color: #555; margin-top: 5px; }
+
+        .back-to-top { position: fixed; bottom: 30px; right: 30px; background: var(--accent); color: #000; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: 0.3s; box-shadow: 0 0 20px var(--accent-glow); font-size: 1.2rem; }
+        .back-to-top.visible { opacity: 1; }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 15px 20px; }
+            .reader-toolbar { padding: 10px; gap: 10px; top: 70px; }
+            .nav-btn span { display: none; }
+            .chapter-select { width: 100%; min-width: auto; }
+            .comic-title { font-size: 2.5rem; }
+            .bottom-section { padding: 20px; }
+            .action-buttons { flex-direction: column; }
+            .big-next-btn { width: 100%; padding: 15px; }
         }
-        
-        .loading-text { text-align: center; padding: 50px; color: #888; }
-        .bottom-section { padding: 40px; text-align: center; }
-        .big-next-btn { background: var(--accent); color: #000; padding: 15px 40px; font-family: 'Teko'; font-size: 1.5rem; text-decoration: none; display: inline-block; margin-top: 20px; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <a href="index.html" class="logo">INK<span>SPACE</span></a>
-        <div class="nav-controls">
-            <a href="index.html">Home</a>
+        <div class="nav-left">
+            <img src="inkspacelogo.png" class="logo-img" alt="Logo" onerror="this.style.display='none'">
+            <a href="index.html" class="logo-text">INK<span>SPACE</span></a>
+        </div>
+        <div class="nav-right">
+            <a href="index.html"><i class="fas fa-home"></i> HOME</a>
+            
+            <div id="authSection">
+                <button class="login-btn" onclick="signIn()"><i class="fas fa-sign-in-alt"></i> SIGN IN</button>
+            </div>
         </div>
     </nav>
 
     <div class="reader-toolbar">
-        <button class="nav-btn disabled" id="btnPrev">Prev</button>
-        <select class="chapter-select" id="chapterSelect"><option>Loading...</option></select>
-        <button class="nav-btn disabled" id="btnNext">Next</button>
+        <button class="nav-btn disabled" id="btnPrev"><i class="fas fa-chevron-left"></i> <span>Prev</span></button>
+        <select class="chapter-select" id="chapterSelect"><option>Loading Chapter...</option></select>
+        <button class="nav-btn disabled" id="btnNext"><span>Next</span> <i class="fas fa-chevron-right"></i></button>
     </div>
 
     <div class="reader-container" id="readerCanvas">
-        <div style="padding: 40px 20px; text-align: center;">
-            <h1 id="comicTitle" style="font-family: 'Teko'; font-size: 3rem; margin:0;">LOADING...</h1>
-            <p id="comicEp" style="color: var(--accent); margin:0; font-size: 1.2rem;">...</p>
+        <div class="comic-header">
+            <h1 class="comic-title" id="comicTitle">LOADING...</h1>
+            <p class="comic-ep" id="comicEp">...</p>
         </div>
 
         <div id="pagesContainer">
-             <div class="loading-text">Loading Pages...</div>
+             <div class="loading-text"><i class="fas fa-circle-notch fa-spin"></i> Retrieving Pages...</div>
         </div>
-        
-        <div class="bottom-section">
-            <h3>End of Episode</h3>
-            <a href="index.html" class="big-next-btn">BACK TO SERIES</a>
+    </div>
+
+    <div class="bottom-section">
+        <div class="engagement-box">
+            <h3>Did you enjoy this chapter?</h3>
+            <p>Support the creator by liking and sharing this episode!</p>
+            
+            <div class="action-buttons">
+                <button class="action-btn" id="likeBtn">
+                    <i class="far fa-heart"></i> <span id="likeCount">LIKE</span>
+                </button>
+                <button class="action-btn"><i class="fas fa-share-alt"></i> SHARE</button>
+            </div>
+
+            <a href="index.html" class="big-next-btn">BACK TO SERIES LIST <i class="fas fa-arrow-right"></i></a>
         </div>
+
+        <div class="comment-area">
+            <h2 class="comment-header">COMMENTS</h2>
+            
+            <div id="loginNotice" class="signin-notice">
+                <i class="fas fa-lock"></i> Please <a href="#" onclick="signIn()" style="color:#fff; text-decoration:underline;">Sign In</a> to post a comment.
+            </div>
+
+            <div id="commentBox" class="comment-input-box">
+                <textarea placeholder="Write your thoughts here..."></textarea>
+                <button class="post-btn">POST COMMENT</button>
+            </div>
+
+            <div class="user-comment">
+                <div class="avatar"><i class="fas fa-user"></i></div>
+                <div class="comment-body">
+                    <h4>CyberPunk_99</h4>
+                    <p>Fuh, art style dia memang next level! Tak sabar tunggu next chapter.</p>
+                    <div class="comment-date">2 hours ago</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="back-to-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">
+        <i class="fas fa-arrow-up"></i>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        // IMPORT AUTH & DATABASE TRANSACTION
+        import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDqDvRp1IGmhC5_EtQ8I5lBBfkPOaUBR-A",
@@ -85,82 +181,131 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
         const urlParams = new URLSearchParams(window.location.search);
         const targetTitle = urlParams.get('title');
         const targetEp = urlParams.get('ep');
 
+        let currentSeriesId = null;
+        let currentUser = null;
+
+        // --- AUTH LOGIC (SIGN IN / OUT) ---
+        window.signIn = () => {
+            signInWithPopup(auth, provider).then((result) => {
+                // Berjaya Login
+            }).catch((error) => {
+                alert("Login Failed: " + error.message);
+            });
+        };
+
+        window.logout = () => {
+            signOut(auth).then(() => {
+                location.reload();
+            });
+        };
+
+        // Check Status User
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            const authDiv = document.getElementById('authSection');
+            const commentBox = document.getElementById('commentBox');
+            const loginNotice = document.getElementById('loginNotice');
+
+            if (user) {
+                // User dah login: Tunjuk Profile & Kotak Komen
+                authDiv.innerHTML = `
+                    <div class="user-profile">
+                        <img src="${user.photoURL}" class="user-avatar" title="${user.displayName}">
+                        <button class="login-btn" onclick="logout()" style="font-size:0.8rem;">LOGOUT</button>
+                    </div>
+                `;
+                commentBox.style.display = "block";
+                loginNotice.style.display = "none";
+            } else {
+                // Belum login
+                authDiv.innerHTML = `<button class="login-btn" onclick="signIn()"><i class="fas fa-sign-in-alt"></i> SIGN IN</button>`;
+                commentBox.style.display = "none";
+                loginNotice.style.display = "block";
+            }
+        });
+
+        // --- MAIN LOGIC ---
         const titleEl = document.getElementById('comicTitle');
         const epEl = document.getElementById('comicEp');
         const pagesContainer = document.getElementById('pagesContainer');
         const selectBox = document.getElementById('chapterSelect');
         const btnPrev = document.getElementById('btnPrev');
         const btnNext = document.getElementById('btnNext');
+        const likeBtn = document.getElementById('likeBtn');
 
         if(targetTitle && targetEp) {
             titleEl.innerText = targetTitle.toUpperCase();
             epEl.innerText = targetEp;
+            document.title = `Reading: ${targetTitle} - ${targetEp} | INK SPACE`;
 
             onValue(ref(db, 'series'), (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
                     let foundSeries = null;
+                    // Cari siri & simpan ID (Kunci)
                     Object.keys(data).forEach(key => {
-                        if(data[key].title === targetTitle) foundSeries = data[key];
+                        if(data[key].title === targetTitle) {
+                            foundSeries = data[key];
+                            currentSeriesId = key; // Simpan ID untuk Like nanti
+                        }
                     });
 
-                    if (foundSeries && foundSeries.episodes) {
-                        // Kumpul semua episod
-                        const allEps = [];
-                        let currentEpData = null;
+                    if (foundSeries) {
+                        // Update Like Count Display
+                        const likeCount = foundSeries.likes || 0;
+                        likeBtn.innerHTML = `<i class="far fa-heart"></i> ${formatNumber(likeCount)} LIKES`;
 
-                        Object.keys(foundSeries.episodes).forEach(epKey => {
-                            const ep = foundSeries.episodes[epKey];
-                            allEps.push(ep);
-                            if(ep.name === targetEp) currentEpData = ep;
-                        });
+                        // Render Episod
+                        if(foundSeries.episodes) {
+                            const allEps = [];
+                            let currentEpData = null;
 
-                        // 1. RENDER PAGES (LOOPING 18 PAGE)
-                        if(currentEpData) {
-                            pagesContainer.innerHTML = ""; // Kosongkan
-                            
-                            // Check: Adakah ia array (format baru) atau string (format lama)?
-                            if(Array.isArray(currentEpData.pages)) {
-                                // FORMAT BARU (Banyak Page)
-                                currentEpData.pages.forEach(pageSrc => {
-                                    const img = document.createElement('img');
-                                    img.src = pageSrc;
-                                    img.className = "comic-page";
-                                    img.loading = "lazy"; // Supaya tak berat
-                                    pagesContainer.appendChild(img);
-                                });
-                            } else if (currentEpData.img) {
-                                // FALLBACK FORMAT LAMA (1 Page)
-                                pagesContainer.innerHTML = `<img src="${currentEpData.img}" class="comic-page">`;
+                            Object.keys(foundSeries.episodes).forEach(epKey => {
+                                const ep = foundSeries.episodes[epKey];
+                                allEps.push(ep);
+                                if(ep.name === targetEp) currentEpData = ep;
+                            });
+
+                            if(currentEpData) {
+                                pagesContainer.innerHTML = "";
+                                if(Array.isArray(currentEpData.pages)) {
+                                    currentEpData.pages.forEach(pageSrc => {
+                                        const img = document.createElement('img');
+                                        img.src = pageSrc;
+                                        img.className = "comic-page";
+                                        img.loading = "lazy";
+                                        pagesContainer.appendChild(img);
+                                    });
+                                } else if (currentEpData.img) {
+                                    pagesContainer.innerHTML = `<img src="${currentEpData.img}" class="comic-page">`;
+                                }
+                            } else {
+                                pagesContainer.innerHTML = "<div class='loading-text'>Episode Not Found.</div>";
                             }
-                        } else {
-                            pagesContainer.innerHTML = "<div class='loading-text'>Episode not found.</div>";
-                        }
 
-                        // 2. SETUP NAVIGASI
-                        allEps.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
-                        selectBox.innerHTML = "";
-                        const currentIndex = allEps.findIndex(e => e.name === targetEp);
+                            // Setup Navigation
+                            allEps.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
+                            selectBox.innerHTML = "";
+                            const currentIndex = allEps.findIndex(e => e.name === targetEp);
 
-                        allEps.forEach(ep => {
-                            const isSelected = (ep.name === targetEp) ? "selected" : "";
-                            const url = `read.html?title=${encodeURIComponent(targetTitle)}&ep=${encodeURIComponent(ep.name)}`;
-                            selectBox.innerHTML += `<option value="${url}" ${isSelected}>${ep.name}</option>`;
-                        });
+                            allEps.forEach(ep => {
+                                const isSelected = (ep.name === targetEp) ? "selected" : "";
+                                const url = `read.html?title=${encodeURIComponent(targetTitle)}&ep=${encodeURIComponent(ep.name)}`;
+                                selectBox.innerHTML += `<option value="${url}" ${isSelected}>${ep.name}</option>`;
+                            });
 
-                        btnPrev.classList.toggle('disabled', currentIndex <= 0);
-                        if(currentIndex > 0) {
-                            btnPrev.onclick = () => location.href = `read.html?title=${encodeURIComponent(targetTitle)}&ep=${encodeURIComponent(allEps[currentIndex-1].name)}`;
-                        }
+                            btnPrev.classList.toggle('disabled', currentIndex <= 0);
+                            if(currentIndex > 0) btnPrev.onclick = () => location.href = `read.html?title=${encodeURIComponent(targetTitle)}&ep=${encodeURIComponent(allEps[currentIndex-1].name)}`;
 
-                        btnNext.classList.toggle('disabled', currentIndex >= allEps.length - 1);
-                        if(currentIndex < allEps.length - 1) {
-                            btnNext.onclick = () => location.href = `read.html?title=${encodeURIComponent(targetTitle)}&ep=${encodeURIComponent(allEps[currentIndex+1].name)}`;
+                            btnNext.classList.toggle('disabled', currentIndex >= allEps.length - 1);
+                            if(currentIndex < allEps.length - 1) btnNext.onclick = () => location.href = `read.html?title=${encodeURIComponent(targetTitle)}&ep=${encodeURIComponent(allEps[currentIndex+1].name)}`;
                         }
                     }
                 }
@@ -170,6 +315,48 @@
         selectBox.addEventListener('change', function() {
             if(this.value) window.location.href = this.value;
         });
+
+        // --- REALTIME LIKE FUNCTION ---
+        likeBtn.addEventListener('click', () => {
+            if(!currentSeriesId) return;
+
+            // Efek Visual
+            likeBtn.classList.toggle('liked');
+            const icon = likeBtn.querySelector('i');
+            
+            // Hantar ke Database (Tambah +1)
+            const seriesRef = ref(db, `series/${currentSeriesId}`);
+            runTransaction(seriesRef, (currentData) => {
+                if (currentData) {
+                    if (likeBtn.classList.contains('liked')) {
+                        currentData.likes = (currentData.likes || 0) + 1;
+                        icon.className = 'fas fa-heart'; // Solid heart
+                    } else {
+                        // Kalau nak support unlike (tolak 1), boleh letak sini.
+                        // Buat masa ni, kita buat tambah je biar user happy.
+                        // currentData.likes = (currentData.likes || 0) + 1; 
+                        icon.className = 'far fa-heart';
+                    }
+                }
+                return currentData;
+            });
+        });
+
+        function formatNumber(num) {
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+            return num;
+        }
+
+        window.addEventListener('scroll', () => {
+            const btn = document.querySelector('.back-to-top');
+            if (window.scrollY > 800) btn.classList.add('visible');
+            else btn.classList.remove('visible');
+        });
+
+        // Expose function
+        window.signIn = signIn;
+        window.logout = logout;
+
     </script>
 </body>
 </html>
