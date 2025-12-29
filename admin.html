@@ -2,104 +2,221 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Studio Manager</title>
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600&family=Roboto+Condensed:wght@400&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>INK SPACE - Admin Dashboard</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Rajdhani:wght@500;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
-        body { background: #111; color: #fff; font-family: 'Roboto Condensed', sans-serif; padding: 0; margin: 0; }
+        /* --- PREMIUM DARK THEME --- */
+        :root { 
+            --bg-body: #050505; 
+            --bg-card: #121212; 
+            --bg-panel: rgba(20, 20, 20, 0.95);
+            --accent: #ff6600; 
+            --accent-glow: rgba(255, 102, 0, 0.4); 
+            --text-main: #ffffff; 
+            --text-muted: #888888; 
+            --border: 1px solid #333; 
+        }
+
+        body { 
+            background: var(--bg-body); color: var(--text-main); font-family: 'Roboto Condensed', sans-serif; margin: 0; padding: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px; min-height: 100vh;
+        }
         
-        /* HEADER */
-        .header { background: #000; padding: 20px; border-bottom: 2px solid #ff6600; display: flex; justify-content: space-between; align-items: center; }
-        .title { font-family:'Teko'; font-size: 2rem; margin: 0; color: #fff; }
-        .title span { color: #ff6600; }
+        /* HEADER (MOBILE FRIENDLY) */
+        .header { 
+            background: rgba(10, 10, 10, 0.9); padding: 15px 20px; border-bottom: 2px solid var(--accent); 
+            display: flex; justify-content: space-between; align-items: center; 
+            backdrop-filter: blur(10px); position: sticky; top: 0; z-index: 100;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); flex-wrap: wrap; gap: 10px;
+        }
+        .title { font-family:'Teko'; font-size: 2rem; margin: 0; color: #fff; text-shadow: 0 0 10px var(--accent-glow); line-height: 1; }
+        .title span { color: var(--accent); }
+        .subtitle { font-family: 'Rajdhani'; color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; display: block; }
 
-        /* TABS */
-        .tabs { display: flex; background: #1a1a1a; cursor: pointer; }
-        .tab { flex: 1; padding: 15px; text-align: center; font-weight: bold; border-bottom: 3px solid transparent; transition: 0.3s; }
-        .tab:hover { background: #222; }
-        .tab.active { border-bottom: 3px solid #ff6600; color: #ff6600; background: #222; }
+        /* TABS (MOBILE FRIENDLY) */
+        .tabs { display: flex; justify-content: space-between; background: #0a0a0a; border-bottom: 1px solid #333; }
+        .tab { 
+            flex: 1; padding: 15px; text-align: center; font-weight: bold; font-family: 'Rajdhani'; 
+            font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; 
+            color: #666; transition: 0.3s; border-bottom: 3px solid transparent; 
+        }
+        .tab:hover { color: #fff; background: #151515; }
+        .tab.active { border-bottom: 3px solid var(--accent); color: var(--accent); background: linear-gradient(to top, rgba(255,102,0,0.1), transparent); }
 
-        /* CONTENT */
-        .container { max-width: 800px; margin: 30px auto; padding: 20px; }
-        .panel { display: none; }
+        /* CONTAINER */
+        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; padding-bottom: 50px; }
+        .panel { 
+            display: none; background: var(--bg-panel); padding: 25px; border-radius: 12px; 
+            border: 1px solid #333; box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
         .panel.active { display: block; animation: fadeIn 0.5s; }
-        @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+        @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
 
         /* FORMS */
-        label { display: block; margin-top: 20px; color: #ff6600; font-weight: bold; font-family: 'Teko'; font-size: 1.3rem; }
-        input, select { width: 100%; padding: 12px; margin: 5px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 4px; box-sizing: border-box; }
-        .note { font-size: 0.85rem; color: #888; margin-bottom: 5px; }
+        .form-group { margin-bottom: 20px; position: relative; }
+        label { display: block; margin-bottom: 5px; color: var(--accent); font-weight: bold; font-family: 'Teko'; font-size: 1.3rem; text-transform: uppercase; letter-spacing: 1px; }
+        
+        input[type="text"] { 
+            width: 100%; padding: 12px; background: #000; border: 1px solid #444; 
+            color: #fff; border-radius: 6px; font-size: 1rem; font-family: 'Roboto Condensed';
+            transition: 0.3s; box-sizing: border-box;
+        }
+        input[type="text"]:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); outline: none; }
+        
+        input[type="file"] { 
+            width: 100%; padding: 10px; background: #1a1a1a; border: 1px dashed #555; 
+            color: #ccc; border-radius: 6px; cursor: pointer; transition: 0.3s; box-sizing: border-box;
+        }
+        input[type="file"]:hover { border-color: var(--accent); background: #222; }
 
+        .note { font-size: 0.8rem; color: #666; margin-top: 5px; font-style: italic; }
+        
         /* BUTTONS */
-        .btn { padding: 12px 25px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; border-radius: 4px; margin-top: 20px; width: 100%; transition: 0.2s; }
-        .btn-upload { background: #ff6600; color: #000; }
-        .btn-upload:hover { background: #ff8533; }
-        .btn-delete { background: #cc0000; color: #fff; width: auto; padding: 5px 15px; font-size: 0.9rem; margin: 0; }
+        .btn { 
+            padding: 15px 30px; border: none; font-weight: bold; cursor: pointer; font-size: 1.1rem; 
+            border-radius: 6px; width: 100%; transition: 0.3s; font-family: 'Teko'; letter-spacing: 1px;
+            text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-upload { background: var(--accent); color: #000; box-shadow: 0 0 20px rgba(255,102,0,0.2); }
+        .btn-upload:hover { background: #ff8533; box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
+        
+        /* Small Buttons (Delete/Edit) */
+        .btn-action-group { display: flex; gap: 10px; }
+        .btn-small { 
+            padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; border: 1px solid transparent; 
+            font-family: 'Rajdhani'; font-weight: bold; text-transform: uppercase;
+        }
+        .btn-delete { background: rgba(255, 0, 0, 0.1); border-color: #550000; color: #ff5555; }
+        .btn-delete:hover { background: #ff0000; color: #fff; }
+        .btn-edit { background: rgba(0, 255, 255, 0.1); border-color: #005555; color: #00ffff; }
+        .btn-edit:hover { background: #00ffff; color: #000; }
+        .btn-save { background: #00ff00; color: #000; }
+        .btn-cancel { background: #555; color: #fff; }
 
         /* PREVIEW AREA */
-        .file-preview { margin-top: 10px; padding: 10px; background: #1a1a1a; border: 1px dashed #444; min-height: 50px; color: #ccc; }
+        .file-preview { 
+            margin-top: 15px; padding: 15px; background: rgba(0,255,0,0.05); 
+            border: 1px solid rgba(0,255,0,0.2); border-radius: 6px; color: #0f0; 
+            font-family: 'monospace'; font-size: 0.9rem; min-height: 40px; 
+            display: flex; align-items: center; justify-content: center; text-align: center;
+        }
 
-        /* MANAGEMENT LIST */
-        .series-item { background: #1a1a1a; border: 1px solid #333; margin-bottom: 10px; border-radius: 5px; overflow: hidden; }
-        .series-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; background: #222; cursor: pointer; }
-        .series-header:hover { background: #2a2a2a; }
-        .ep-list { display: none; padding: 10px; background: #111; }
-        .ep-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #333; }
-        .ep-item:last-child { border-bottom: none; }
-        .show-ep { display: block; }
+        /* MANAGE LIST (MOBILE OPTIMIZED) */
+        .series-item { background: #0a0a0a; border: 1px solid #333; margin-bottom: 15px; border-radius: 8px; overflow: hidden; transition: 0.3s; }
+        
+        .series-header { 
+            padding: 15px; display: flex; justify-content: space-between; align-items: flex-start; 
+            background: #151515; cursor: pointer; transition: 0.2s; gap: 10px; flex-wrap: wrap;
+        }
+        .series-header:hover { background: #222; }
+        
+        .series-info { flex: 1; }
+        .series-info strong { font-family: 'Teko'; font-size: 1.4rem; color: #fff; font-weight: 500; display: block; line-height: 1.1; }
+        .series-info small { color: #888; font-family: 'Rajdhani'; text-transform: uppercase; font-size: 0.8rem; }
 
-        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; display: none; justify-content: center; align-items: center; flex-direction: column; }
-        .loader { border: 5px solid #333; border-top: 5px solid #ff6600; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        /* Edit Mode Styles */
+        .edit-mode-box { width: 100%; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #333; display: none; }
+        .edit-mode-box.active { display: block; cursor: default; }
+        .edit-input { width: 100%; padding: 8px; background: #000; border: 1px solid #444; color: #fff; margin-bottom: 5px; font-size: 0.9rem; }
+        
+        .ep-list { display: none; padding: 0; background: #050505; border-top: 1px solid #333; }
+        .ep-item { 
+            display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; 
+            border-bottom: 1px solid #222; transition: 0.2s; flex-wrap: wrap; gap: 10px;
+        }
+        .ep-item:hover { background: #111; }
+        .ep-title { color: #ccc; font-family: 'Rajdhani'; font-weight: bold; flex: 1; min-width: 150px; }
+
+        /* LOADING */
+        .loading-overlay { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); z-index: 999; display: none; 
+            justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(5px);
+        }
+        .loader { 
+            border: 5px solid #333; border-top: 5px solid var(--accent); border-radius: 50%; 
+            width: 60px; height: 60px; animation: spin 1s linear infinite; box-shadow: 0 0 20px var(--accent-glow);
+        }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        hr { border: 0; border-top: 1px solid #333; margin: 30px 0; }
+        
+        #seriesStatus { font-family: 'Rajdhani'; font-weight: bold; margin-top: 5px; font-size: 0.9rem; }
+
+        /* MOBILE TWEAKS */
+        @media (max-width: 600px) {
+            .header { flex-direction: column; align-items: flex-start; }
+            .tabs { font-size: 0.9rem; }
+            .tab { padding: 12px; }
+            .panel { padding: 20px; }
+            .series-header { flex-direction: column; }
+            .btn-action-group { width: 100%; justify-content: flex-end; margin-top: 5px; }
+        }
 
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1 class="title">INK<span>SPACE</span> ADMIN</h1>
-        <div style="font-size:0.9rem; color:#888;">Manage Content</div>
+        <div>
+            <h1 class="title">INK<span>SPACE</span> ADMIN</h1>
+            <span class="subtitle">Creator Studio Manager</span>
+        </div>
+        <div style="font-size: 1.5rem; color: var(--accent);"><i class="fas fa-layer-group"></i></div>
     </div>
 
     <div class="tabs">
-        <div class="tab active" onclick="switchTab('uploadPanel')">UPLOAD NEW</div>
-        <div class="tab" onclick="switchTab('managePanel')">MANAGE / DELETE</div>
+        <div class="tab active" onclick="switchTab('uploadPanel')"><i class="fas fa-cloud-upload-alt"></i> UPLOAD</div>
+        <div class="tab" onclick="switchTab('managePanel')"><i class="fas fa-edit"></i> MANAGE</div>
     </div>
 
     <div class="container">
         
         <div id="uploadPanel" class="panel active">
-            <label>1. NAMA SIRI (Series Title)</label>
-            <input type="text" id="seriesTitle" placeholder="Contoh: Pendekar Cyber" onblur="checkSeries()">
-            <div id="seriesStatus" style="font-size:0.9rem; margin-top:5px;"></div>
+            <div class="form-group">
+                <label>1. SERIES TITLE (TAJUK)</label>
+                <input type="text" id="seriesTitle" placeholder="e.g. Pendekar Cyber" onblur="checkSeries()">
+                <div id="seriesStatus"></div>
+            </div>
 
-            <label>2. AUTHOR (Penulis)</label>
-            <input type="text" id="authorName" placeholder="Nama Pelukis...">
+            <div class="form-group">
+                <label>2. AUTHOR (PENULIS)</label>
+                <input type="text" id="authorName" placeholder="e.g. Pak Mat Studio">
+            </div>
 
-            <label>3. COVER IMAGE (Poster Utama)</label>
-            <p class="note">*Hanya upload jika siri baru atau nak tukar cover.</p>
-            <input type="file" id="coverFile" accept="image/*">
+            <div class="form-group">
+                <label>3. COVER IMAGE (POSTER)</label>
+                <input type="file" id="coverFile" accept="image/*">
+                <p class="note">*Required for new series. Optional for updates.</p>
+            </div>
 
-            <hr style="border-color:#333; margin:30px 0;">
+            <hr>
 
-            <label>4. NAMA EPISOD</label>
-            <input type="text" id="epName" placeholder="Contoh: Episod 01">
+            <div class="form-group">
+                <label>4. EPISODE NAME</label>
+                <input type="text" id="epName" placeholder="e.g. Episode 01 - The Beginning">
+            </div>
 
-            <label>5. PAGES (Isi Komik)</label>
-            <p class="note">*Boleh select BANYAK gambar (Select All > Open). Max 1MB/page.</p>
-            <input type="file" id="epFiles" multiple accept="image/*" onchange="previewFiles()">
-            
-            <div id="filePreview" class="file-preview">No files selected.</div>
+            <div class="form-group">
+                <label>5. COMIC PAGES (ISI)</label>
+                <input type="file" id="epFiles" multiple accept="image/*" onchange="previewFiles()">
+                <p class="note">*Select multiple images (Max 1MB per page). Auto-sorted by filename.</p>
+                <div id="filePreview" class="file-preview">No files selected</div>
+            </div>
 
-            <button class="btn btn-upload" id="uploadBtn">PUBLISH EPISODE</button>
+            <button class="btn btn-upload" id="uploadBtn"><i class="fas fa-rocket"></i> PUBLISH EPISODE</button>
         </div>
 
         <div id="managePanel" class="panel">
-            <h2 style="font-family:'Teko'; color:#ff6600;">EXISTING COMICS</h2>
-            <p class="note">Click tajuk untuk tengok episod. Hati-hati button Delete!</p>
+            <h2 style="font-family:'Teko'; color:var(--accent); margin-top:0;">DATABASE CONTENT</h2>
+            <p class="note" style="margin-bottom:20px;">Tap title to expand. Use Edit to rename.</p>
             <div id="manageList">
-                <p style="text-align:center; padding:20px; color:#666;">Loading database...</p>
+                <p style="text-align:center; padding:40px; color:#666;"><i class="fas fa-circle-notch fa-spin"></i> Loading data...</p>
             </div>
         </div>
 
@@ -107,14 +224,14 @@
 
     <div class="loading-overlay" id="loader">
         <div class="loader"></div>
-        <p style="margin-top:15px; font-weight:bold; color:#fff;" id="loaderText">Processing...</p>
+        <p style="margin-top:20px; font-weight:bold; color:#fff; font-family:'Rajdhani'; letter-spacing:1px;" id="loaderText">PROCESSING DATA...</p>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getDatabase, ref, update, push, get, child, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        // CONFIG (GANTI DENGAN API KEY AWAK)
+        // CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyDqDvRp1IGmhC5_EtQ8I5lBBfkPOaUBR-A",
             authDomain: "inkspace-c9dca.firebaseapp.com",
@@ -129,7 +246,6 @@
         const db = getDatabase(app);
 
         // --- GLOBAL VARS ---
-        let currentSeriesEpisodes = [];
         let isSeriesExist = false;
 
         // --- HELPERS ---
@@ -140,6 +256,14 @@
             event.target.classList.add('active');
             if(tabName === 'managePanel') loadManagementList();
         }
+        
+        // Tab Fix
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
 
         const createSlug = (text) => text.toLowerCase().replace(/ /g, "_").replace(/[^\w-]+/g, "");
         
@@ -156,21 +280,25 @@
             const files = document.getElementById('epFiles').files;
             const display = document.getElementById('filePreview');
             if(files.length > 0) {
-                display.innerHTML = `✅ <b>${files.length} Pages Selected</b><br>`;
-                // Tunjuk nama file pertama dan terakhir untuk confirm urutan
-                display.innerHTML += `<small>First: ${files[0].name} ... Last: ${files[files.length-1].name}</small>`;
+                display.innerHTML = `<span><i class="fas fa-check-circle"></i> <b>${files.length} Pages Selected</b></span>`;
+                display.style.color = "#0f0";
+                display.style.background = "rgba(0,255,0,0.1)";
+                display.style.borderColor = "rgba(0,255,0,0.3)";
             } else {
-                display.innerHTML = "No files selected.";
+                display.innerHTML = "No files selected";
+                display.style.color = "#ccc";
+                display.style.background = "rgba(0,255,0,0.05)";
+                display.style.borderColor = "rgba(0,255,0,0.2)";
             }
         }
 
-        // --- UPLOAD LOGIC ---
+        // --- UPLOAD LOGIC (SAMA) ---
         window.checkSeries = async () => {
             const title = document.getElementById('seriesTitle').value.trim();
             const statusDiv = document.getElementById('seriesStatus');
             const authorInput = document.getElementById('authorName');
 
-            if(!title) return;
+            if(!title) { statusDiv.innerHTML = ""; return; }
             
             const slug = createSlug(title);
             const snapshot = await get(child(ref(db), `series/${slug}`));
@@ -178,11 +306,11 @@
             if(snapshot.exists()) {
                 isSeriesExist = true;
                 const data = snapshot.val();
-                statusDiv.innerHTML = `<span style="color:#0f0">✔ Siri dijumpai.</span>`;
+                statusDiv.innerHTML = `<span style="color:#00ff88"><i class="fas fa-check"></i> Series Found. (Cover Optional)</span>`;
                 if(data.author) authorInput.value = data.author;
             } else {
                 isSeriesExist = false;
-                statusDiv.innerHTML = `<span style="color:#ffcc00">✨ Siri baru akan dicipta.</span>`;
+                statusDiv.innerHTML = `<span style="color:#ffcc00"><i class="fas fa-star"></i> New Series! Cover Image Required.</span>`;
                 authorInput.value = "";
             }
         }
@@ -192,27 +320,25 @@
             const author = document.getElementById('authorName').value.trim();
             const epName = document.getElementById('epName').value.trim();
             const coverFile = document.getElementById('coverFile').files[0];
-            const epFiles = document.getElementById('epFiles').files; // MULTIPLE FILES
+            const epFiles = document.getElementById('epFiles').files;
 
             const loader = document.getElementById('loader');
             const loaderText = document.getElementById('loaderText');
 
             if(!title || !author || !epName || epFiles.length === 0) {
-                return alert("Sila isi semua maklumat dan pilih gambar page!");
+                return alert("Please fill all fields and select pages!");
             }
 
-            if(!isSeriesExist && !coverFile) return alert("Siri baru wajib ada Cover Image!");
+            if(!isSeriesExist && !coverFile) return alert("New series must have a Cover Image!");
 
-            // Start Loading
             loader.style.display = 'flex';
-            loaderText.innerText = "Processing images... (This may take a while)";
+            loaderText.innerText = "PROCESSING IMAGES... (DO NOT CLOSE)";
 
             try {
                 const seriesId = createSlug(title);
                 const updates = {};
                 const timestamp = Date.now();
 
-                // 1. Handle Series Info
                 updates[`series/${seriesId}/title`] = title;
                 updates[`series/${seriesId}/author`] = author;
                 updates[`series/${seriesId}/last_updated`] = timestamp;
@@ -222,30 +348,24 @@
                     updates[`series/${seriesId}/cover`] = base64Cover;
                 }
 
-                // 2. Handle Multiple Pages (Batch Conversion)
-                loaderText.innerText = `Converting ${epFiles.length} pages...`;
+                loaderText.innerText = `CONVERTING ${epFiles.length} PAGES...`;
                 
-                // Convert FileList to Array and sort by name to ensure order (1.jpg, 2.jpg)
                 const sortedFiles = Array.from(epFiles).sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
-                
-                // Convert all pages to Base64
                 const pagePromises = sortedFiles.map(file => convertToBase64(file));
                 const pagesArray = await Promise.all(pagePromises);
 
-                // 3. Save Episode Data
                 const newEpKey = push(ref(db, `series/${seriesId}/episodes`)).key;
                 
                 updates[`series/${seriesId}/episodes/${newEpKey}`] = {
                     name: epName,
-                    pages: pagesArray, // ARRAY GAMBAR DISIMPAN SINI
+                    pages: pagesArray,
                     timestamp: timestamp
                 };
 
-                // 4. Upload
-                loaderText.innerText = "Uploading to Database...";
+                loaderText.innerText = "UPLOADING TO SERVER...";
                 await update(ref(db), updates);
 
-                alert("Berjaya Publish!");
+                alert("PUBLISH SUCCESSFUL!");
                 location.reload();
 
             } catch (error) {
@@ -255,83 +375,189 @@
             }
         });
 
-        // --- MANAGE / DELETE LOGIC ---
+        // --- MANAGE / EDIT LOGIC (UPDATED WITH EDIT FEATURE) ---
         window.loadManagementList = () => {
             const listDiv = document.getElementById('manageList');
-            listDiv.innerHTML = '<p style="text-align:center; padding:20px; color:#666;">Loading...</p>';
+            listDiv.innerHTML = '<p style="text-align:center; padding:40px; color:#666;"><i class="fas fa-circle-notch fa-spin"></i> Loading...</p>';
 
             onValue(ref(db, 'series'), (snapshot) => {
                 listDiv.innerHTML = '';
                 const data = snapshot.val();
 
                 if(!data) {
-                    listDiv.innerHTML = '<p style="text-align:center; padding:20px;">No comics found.</p>';
+                    listDiv.innerHTML = '<p style="text-align:center; padding:40px; color:#555;">Database Empty.</p>';
                     return;
                 }
 
                 Object.keys(data).forEach(seriesKey => {
                     const s = data[seriesKey];
                     const epCount = s.episodes ? Object.keys(s.episodes).length : 0;
+                    const author = s.author || "Unknown";
 
-                    // HTML untuk Siri
                     let html = `
                         <div class="series-item">
-                            <div class="series-header" onclick="toggleEpList('${seriesKey}')">
-                                <div>
-                                    <strong style="font-size:1.1rem">${s.title}</strong><br>
-                                    <span style="font-size:0.8rem; color:#888;">${epCount} Episodes</span>
+                            <div class="series-header" onclick="toggleEpList(event, '${seriesKey}')">
+                                <div class="series-info">
+                                    <strong>${s.title}</strong>
+                                    <small>By: ${author} • ${epCount} EPISODES</small>
                                 </div>
-                                <i class="fas fa-chevron-down"></i>
+                                <div class="btn-action-group">
+                                    <button class="btn-small btn-edit" onclick="toggleEditSeries(event, '${seriesKey}', '${s.title}', '${author}')"><i class="fas fa-pencil-alt"></i> EDIT</button>
+                                    <i class="fas fa-chevron-down" style="color:#666; margin-left:10px;"></i>
+                                </div>
                             </div>
+
+                            <div id="edit-series-${seriesKey}" class="edit-mode-box" style="padding:15px; background:#111;">
+                                <label style="font-size:0.9rem;">Rename Title:</label>
+                                <input type="text" id="input-title-${seriesKey}" value="${s.title}" class="edit-input">
+                                <label style="font-size:0.9rem;">Rename Author:</label>
+                                <input type="text" id="input-author-${seriesKey}" value="${author}" class="edit-input">
+                                <div style="display:flex; gap:10px; margin-top:10px;">
+                                    <button class="btn-small btn-save" onclick="saveSeries('${seriesKey}')">SAVE CHANGES</button>
+                                    <button class="btn-small btn-cancel" onclick="cancelEditSeries('${seriesKey}')">CANCEL</button>
+                                </div>
+                            </div>
+
                             <div id="epList-${seriesKey}" class="ep-list">
                     `;
 
-                    // HTML untuk Episod dalam Siri
                     if(s.episodes) {
                         Object.keys(s.episodes).forEach(epKey => {
                             const ep = s.episodes[epKey];
+                            const pageCount = ep.pages ? ep.pages.length : (ep.img ? 1 : 0);
                             html += `
                                 <div class="ep-item">
-                                    <span>${ep.name} <small style="color:#666">(${ep.pages ? ep.pages.length : 0} pages)</small></span>
-                                    <button class="btn btn-delete" onclick="deleteEpisode('${seriesKey}', '${epKey}')">DELETE</button>
+                                    <span class="ep-title" id="disp-ep-${epKey}">${ep.name} <small style="color:#666; font-weight:normal;">(${pageCount} pgs)</small></span>
+                                    
+                                    <div id="edit-ep-${epKey}" style="display:none; flex:1; margin-right:10px;">
+                                        <input type="text" id="input-ep-${epKey}" value="${ep.name}" class="edit-input">
+                                        <div style="display:flex; gap:5px; margin-top:5px;">
+                                            <button class="btn-small btn-save" onclick="saveEpisode('${seriesKey}', '${epKey}')">SAVE</button>
+                                            <button class="btn-small btn-cancel" onclick="cancelEditEpisode('${epKey}')">CANCEL</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="btn-action-group" id="action-ep-${epKey}">
+                                        <button class="btn-small btn-edit" onclick="toggleEditEpisode('${epKey}')"><i class="fas fa-pencil-alt"></i></button>
+                                        <button class="btn-small btn-delete" onclick="deleteEpisode('${seriesKey}', '${epKey}')"><i class="fas fa-trash"></i></button>
+                                    </div>
                                 </div>
                             `;
                         });
                     } else {
-                        html += `<div style="padding:10px; color:#555;">No episodes.</div>`;
+                        html += `<div style="padding:20px; color:#555; text-align:center; font-style:italic;">No episodes found.</div>`;
                     }
 
-                    html += `</div></div>`; // Tutup div
+                    html += `</div></div>`;
                     listDiv.innerHTML += html;
                 });
             }, { onlyOnce: true });
         };
 
-        window.toggleEpList = (id) => {
+        // --- UI FUNCTIONS (EXPAND/COLLAPSE) ---
+        window.toggleEpList = (e, id) => {
+            // Prevent toggling if clicked on buttons
+            if(e.target.closest('button') || e.target.closest('.edit-mode-box')) return;
+
             const el = document.getElementById(`epList-${id}`);
-            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+            const editBox = document.getElementById(`edit-series-${id}`);
+            
+            // Close edit box if open
+            editBox.classList.remove('active');
+
+            if (el.style.display === 'block') {
+                el.style.display = 'none';
+            } else {
+                el.style.display = 'block';
+            }
         };
 
+        // --- SERIES EDIT LOGIC ---
+        window.toggleEditSeries = (e, id, currentTitle, currentAuthor) => {
+            e.stopPropagation(); // Stop expanding list
+            const editBox = document.getElementById(`edit-series-${id}`);
+            editBox.classList.toggle('active');
+        };
+
+        window.cancelEditSeries = (id) => {
+            document.getElementById(`edit-series-${id}`).classList.remove('active');
+        }
+
+        window.saveSeries = async (id) => {
+            const newTitle = document.getElementById(`input-title-${id}`).value.trim();
+            const newAuthor = document.getElementById(`input-author-${id}`).value.trim();
+            
+            if(!newTitle || !newAuthor) return alert("Title and Author cannot be empty.");
+
+            try {
+                await update(ref(db, `series/${id}`), {
+                    title: newTitle,
+                    author: newAuthor
+                });
+                alert("Series Updated!");
+                loadManagementList();
+            } catch(e) {
+                alert("Error updating: " + e.message);
+            }
+        };
+
+        // --- EPISODE EDIT LOGIC ---
+        window.toggleEditEpisode = (epId) => {
+            document.getElementById(`disp-ep-${epId}`).style.display = 'none';
+            document.getElementById(`action-ep-${epId}`).style.display = 'none';
+            document.getElementById(`edit-ep-${epId}`).style.display = 'block';
+        };
+
+        window.cancelEditEpisode = (epId) => {
+            document.getElementById(`disp-ep-${epId}`).style.display = 'block';
+            document.getElementById(`action-ep-${epId}`).style.display = 'flex';
+            document.getElementById(`edit-ep-${epId}`).style.display = 'none';
+        };
+
+        window.saveEpisode = async (seriesId, epId) => {
+            const newName = document.getElementById(`input-ep-${epId}`).value.trim();
+            if(!newName) return alert("Episode name cannot be empty.");
+
+            try {
+                await update(ref(db, `series/${seriesId}/episodes/${epId}`), {
+                    name: newName
+                });
+                alert("Episode Renamed!");
+                loadManagementList();
+            } catch(e) {
+                alert("Error: " + e.message);
+            }
+        };
+
+        // --- DELETE LOGIC ---
         window.deleteEpisode = async (seriesId, epId) => {
-            if(confirm("Are you sure you want to DELETE this episode? cannot be undone.")) {
+            if(confirm("⚠ WARNING: Are you sure you want to DELETE this episode permanently?")) {
                 try {
                     await remove(ref(db, `series/${seriesId}/episodes/${epId}`));
-                    alert("Deleted.");
-                    loadManagementList(); // Refresh list
+                    alert("Episode Deleted.");
+                    loadManagementList(); 
                 } catch(e) {
                     alert("Error deleting: " + e.message);
                 }
             }
         };
 
-        // Expose functions to HTML
+        // Expose functions
         window.checkSeries = checkSeries;
         window.previewFiles = previewFiles;
         window.switchTab = switchTab;
         window.toggleEpList = toggleEpList;
+        
+        window.toggleEditSeries = toggleEditSeries;
+        window.cancelEditSeries = cancelEditSeries;
+        window.saveSeries = saveSeries;
+
+        window.toggleEditEpisode = toggleEditEpisode;
+        window.cancelEditEpisode = cancelEditEpisode;
+        window.saveEpisode = saveEpisode;
+        
         window.deleteEpisode = deleteEpisode;
 
     </script>
 </body>
 </html>
-
