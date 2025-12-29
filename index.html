@@ -4,78 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INK SPACE - Official Comic Page</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Rajdhani:wght@500;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        /* CSS ASAS SAMA */
-        :root { --bg-body: #050505; --bg-card: #141414; --accent: #ff6600; --text-main: #ffffff; --text-muted: #888888; --border: 1px solid #333; }
+        /* --- PREMIUM DARK THEME --- */
+        :root { --bg-body: #050505; --bg-card: #121212; --bg-nav: rgba(10, 10, 10, 0.85); --accent: #ff6600; --accent-glow: rgba(255, 102, 0, 0.4); --text-main: #ffffff; --text-muted: #888888; --border: 1px solid #333; }
         * { box-sizing: border-box; }
-        body { margin: 0; padding: 0; font-family: 'Roboto Condensed', sans-serif; background-color: var(--bg-body); color: var(--text-main); background-image: radial-gradient(rgba(255,255,255,0.1) 1.5px, transparent 1.5px); background-size: 24px 24px; min-height: 100vh; }
+        body { margin: 0; padding: 0; font-family: 'Roboto Condensed', sans-serif; background-color: var(--bg-body); color: var(--text-main); background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; min-height: 100vh; }
         
-        /* HEADER & HERO KEKAL SAMA */
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(10, 10, 10, 0.95); border-bottom: 2px solid var(--accent); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); }
-        .logo { font-family: 'Teko', sans-serif; font-size: 2rem; color: #fff; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; }
-        .logo span { color: var(--accent); }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a { color: #ccc; text-decoration: none; font-weight: 700; transition: 0.3s; }
-        .nav-links a:hover { color: var(--text-main); }
-        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        /* HEADER */
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 40px; background: var(--bg-nav); border-bottom: 1px solid rgba(255,255,255,0.1); position: sticky; top: 0; z-index: 100; backdrop-filter: blur(12px); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); }
+        .nav-left { display: flex; align-items: center; gap: 15px; }
+        .logo-img { height: 40px; width: auto; filter: drop-shadow(0 0 5px var(--accent)); }
+        .logo-text { font-family: 'Teko', sans-serif; font-size: 2.2rem; color: #fff; text-decoration: none; line-height: 1; margin-bottom: -4px; letter-spacing: 1px; }
+        .logo-text span { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .nav-center { display: flex; gap: 30px; margin-left: 40px; }
+        .nav-link { color: #ccc; text-decoration: none; font-weight: 700; font-size: 1rem; transition: 0.3s; text-transform: uppercase; font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; position: relative; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); text-shadow: 0 0 8px var(--accent-glow); }
+        .nav-link.active::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 2px; background: var(--accent); box-shadow: 0 0 10px var(--accent); }
         
-        /* GRID UTAMA */
-        .section-header { border-bottom: 1px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
-        .section-title { font-family: 'Teko'; font-size: 2rem; color: var(--accent); margin: 0; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 25px; }
+        .nav-right { display: flex; align-items: center; gap: 20px; }
+        .search-box { background: rgba(255,255,255,0.05); border: 1px solid #333; padding: 8px 15px; border-radius: 50px; display: flex; align-items: center; transition: 0.3s; width: 220px; }
+        .search-box:focus-within { border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); width: 260px; background: #000; }
+        .search-box input { background: transparent; border: none; color: #fff; outline: none; margin-left: 10px; width: 100%; font-family: 'Roboto Condensed'; font-size: 0.95rem; }
+        .lang-switch { font-family: 'Teko'; font-size: 1.2rem; cursor: pointer; color: #888; transition: 0.3s; display: flex; gap: 5px; align-items: center; }
+        .lang-switch:hover { color: #fff; }
+
+        /* AUTH BUTTON STYLES (NEW) */
+        .login-btn { 
+            color: #ccc; text-decoration: none; font-weight: 700; font-size: 1rem; 
+            text-transform: uppercase; font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; 
+            transition: 0.3s; cursor: pointer; background: none; border: none; 
+            display: flex; align-items: center; gap: 8px;
+        }
+        .login-btn:hover { color: var(--accent); }
+        .user-profile { display: flex; align-items: center; gap: 10px; }
+        .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); }
+
+        /* CONTENT */
+        .container { max-width: 1240px; margin: 0 auto; padding: 40px 20px; }
+        .section-header { border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .section-title { font-family: 'Teko'; font-size: 2.5rem; color: #fff; margin: 0; line-height: 1; text-transform: uppercase; letter-spacing: 1px; border-left: 5px solid var(--accent); padding-left: 15px; }
+        .section-title span { color: var(--accent); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 30px; }
         
-        /* --- CARD STYLE (DIBETULKAN UNTUK FULL COVER) --- */
-        .card { background: var(--bg-card); border: 1px solid #333; border-radius: 8px; overflow: hidden; transition: 0.3s; position: relative; cursor: pointer; }
-        .card:hover { border-color: var(--accent); transform: translateY(-5px); box-shadow: 0px 5px 15px rgba(255, 102, 0, 0.2); }
+        /* PREMIUM CARD DESIGN */
+        .card { background: var(--bg-card); border: 1px solid #222; border-radius: 12px; overflow: hidden; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 15px 30px rgba(255, 102, 0, 0.15); }
         
+        /* --- PERUBAHAN CSS UNTUK FULL COVER --- */
         .card-img-wrap { 
-            height: 350px; /* Tinggi ditingkatkan supaya cover muat cantik */
+            height: 320px; 
             overflow: hidden; 
             position: relative; 
-            background: #222; /* Background gelap jika ratio gambar tak ngam */
+            background: #0a0a0a; 
         }
         .card-img-wrap img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; /* PENTING: Tunjuk SEMUA gambar, jangan crop */
-            object-position: center; 
-            transition: 0.3s; 
+            width: 100%; height: 100%; 
+            object-fit: contain; 
+            object-position: center;
+            transition: 0.5s; 
         }
-        .card:hover .card-img-wrap img { transform: scale(1.05); }
-        
+        .card:hover .card-img-wrap img { transform: scale(1.05); opacity: 0.9; }
+        /* ------------------------------------ */
+
+        .card-updated { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #000; padding: 3px 8px; font-size: 0.75rem; font-weight: bold; border-radius: 4px; z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .card-info { padding: 15px; }
-        .card-title { font-family: 'Teko'; font-size: 1.6rem; margin: 0; color: #fff; line-height: 1.1; }
-        .card-author { color: #888; font-size: 0.9rem; margin: 0 0 10px 0; font-style: italic; }
-        
-        .card-meta { font-size: 0.9rem; color: var(--text-muted); display: flex; justify-content: space-between; border-top: 1px solid #333; padding-top: 10px; }
-        .ep-badge { background: var(--accent); color: #000; padding: 2px 8px; font-weight: bold; border-radius: 4px; font-size: 0.8rem; }
+        .card-title { font-family: 'Teko'; font-size: 1.6rem; margin: 0; color: #fff; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-author { color: #666; font-size: 0.85rem; margin: 2px 0 12px 0; font-family: 'Rajdhani'; text-transform: uppercase; letter-spacing: 1px; }
+        .card-stats { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #222; padding-top: 10px; margin-top: 5px; color: #888; font-size: 0.85rem; font-family: 'Rajdhani'; font-weight: 600; }
+        .stat-item { display: flex; align-items: center; gap: 5px; }
+        .stat-item i { color: var(--accent); font-size: 0.8rem; }
+        .ep-badge { background: #222; color: #ccc; border: 1px solid #333; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
 
-        /* --- MODAL (POPUP EPISOD) --- */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
-        .modal-overlay.active { display: flex; }
-        .modal-box { background: #1a1a1a; width: 90%; max-width: 500px; border: 2px solid var(--accent); border-radius: 10px; overflow: hidden; box-shadow: 0 0 30px rgba(255, 102, 0, 0.3); animation: slideUp 0.3s ease; }
-        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        
-        .modal-header { padding: 20px; background: #111; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
-        .modal-title { font-family: 'Teko'; font-size: 2rem; margin: 0; color: #fff; }
-        .close-btn { background: none; border: none; color: #888; font-size: 1.5rem; cursor: pointer; }
-        .close-btn:hover { color: #fff; }
-        
-        .modal-body { padding: 0; max-height: 60vh; overflow-y: auto; }
-        .episode-item { padding: 15px 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; text-decoration: none; color: #fff; }
-        .episode-item:hover { background: #333; color: var(--accent); padding-left: 25px; }
-        .episode-item:last-child { border-bottom: none; }
-        .ep-name { font-weight: bold; font-size: 1.1rem; }
-        .ep-date { font-size: 0.8rem; color: #666; }
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
+        .modal-box { background: #111; width: 95%; max-width: 450px; border: 1px solid #333; border-radius: 12px; overflow: hidden; box-shadow: 0 0 50px rgba(255, 102, 0, 0.2); animation: slideUp 0.3s ease; position: relative; }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { padding: 20px; background: rgba(20,20,20,0.95); border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; position: absolute; top: 0; width: 100%; z-index: 10; }
+        .modal-title { font-family: 'Teko'; font-size: 1.8rem; margin: 0; color: #fff; text-shadow: 2px 2px 0 #000; }
+        .close-btn { background: rgba(0,0,0,0.5); border: none; color: #fff; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; transition:0.2s; display:flex; align-items:center; justify-content:center; }
+        .close-btn:hover { background: var(--accent); color: #000; }
+        .modal-body { padding: 0; max-height: 80vh; overflow-y: auto; padding-top: 70px; }
+        .episode-item { padding: 15px 25px; border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.2s; text-decoration: none; color: #ccc; }
+        .episode-item:hover { background: #1a1a1a; color: var(--accent); padding-left: 35px; }
+        .ep-name { font-weight: bold; font-family: 'Rajdhani'; font-size: 1.1rem; }
 
-        /* MOBILE FIX */
-        @media (max-width: 768px) {
-            .navbar { flex-direction: column; gap: 10px; }
-            .nav-links { display: none; }
+        @media (max-width: 900px) {
+            .navbar { flex-direction: column; gap: 15px; padding: 15px; }
+            .nav-center { display: none; }
+            .nav-right { width: 100%; justify-content: space-between; }
+            .search-box { width: 70%; }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .card-img-wrap { height: 250px; } /* Mobile pun tinggi sikit */
+            .card-img-wrap { height: 240px; }
         }
     </style>
 </head>
@@ -83,18 +108,39 @@
 
     <nav class="navbar">
         <div class="nav-left">
-            <a href="#" class="logo">INK<span>SPACE</span></a>
+            <img src="inkspacelogo.png" class="logo-img" alt="Logo" onerror="this.style.display='none'">
+            <a href="index.html" class="logo-text">INK<span>SPACE</span></a>
+            <div class="nav-center">
+                <a href="#" class="nav-link active" data-lang-key="nav_updates">Updates</a>
+                <a href="#" class="nav-link" data-lang-key="nav_featured">Featured</a>
+                <a href="#" class="nav-link" data-lang-key="nav_ranking">Ranking</a>
+                <a href="#" class="nav-link" data-lang-key="nav_creators">Creators</a>
+            </div>
         </div>
-        <div class="nav-right" style="color:#888;">Official Series List</div>
+        <div class="nav-right">
+            <div class="search-box">
+                <i class="fas fa-search" style="color:#666;"></i>
+                <input type="text" id="searchInput" placeholder="Search title..." data-lang-ph="search_ph">
+            </div>
+            <div class="lang-switch" onclick="toggleLanguage()">
+                <span id="langText">EN</span> <i class="fas fa-globe"></i>
+            </div>
+            
+            <div id="authSection">
+                <button class="login-btn" onclick="signIn()"><i class="fas fa-sign-in-alt"></i> SIGN IN</button>
+            </div>
+        </div>
     </nav>
 
     <div class="container">
         <div class="section-header">
-            <h2 class="section-title">MY COMIC SERIES</h2>
+            <h2 class="section-title" data-lang-key="sec_title">LATEST <span>UPDATES</span></h2>
         </div>
-
         <div class="grid" id="series-grid">
-            <p style="color:#666;">Loading comics...</p>
+            <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                <i class="fas fa-circle-notch fa-spin" style="color:var(--accent); font-size:2rem;"></i>
+                <p style="color:#666; margin-top:10px;">Accessing Mainframe...</p>
+            </div>
         </div>
     </div>
 
@@ -102,18 +148,18 @@
         <div class="modal-box">
             <div class="modal-header">
                 <h3 class="modal-title" id="modalTitle">TITLE</h3>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+                <button class="close-btn" onclick="closeModal()"><i class="fas fa-times"></i></button>
             </div>
-            <div class="modal-body" id="modalList">
-                </div>
+            <div class="modal-body" id="modalList"></div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        // IMPORT AUTH (NEW)
+        import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-        // CONFIG (SAMA MACAM ADMIN)
         const firebaseConfig = {
             apiKey: "AIzaSyDqDvRp1IGmhC5_EtQ8I5lBBfkPOaUBR-A",
             authDomain: "inkspace-c9dca.firebaseapp.com",
@@ -126,85 +172,137 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
 
         const grid = document.getElementById('series-grid');
+        let allSeriesData = []; 
 
-        // BACA DATA 'SERIES'
-        const seriesRef = ref(db, 'series');
+        // --- AUTH LOGIC (NEW) ---
+        window.signIn = () => {
+            signInWithPopup(auth, provider).catch((error) => alert("Login Failed: " + error.message));
+        };
 
-        onValue(seriesRef, (snapshot) => {
-            grid.innerHTML = '';
+        window.logout = () => {
+            signOut(auth).then(() => location.reload());
+        };
+
+        // Check Login Status & Update Header
+        onAuthStateChanged(auth, (user) => {
+            const authDiv = document.getElementById('authSection');
+            if (user) {
+                authDiv.innerHTML = `
+                    <div class="user-profile">
+                        <img src="${user.photoURL}" class="user-avatar" title="${user.displayName}">
+                        <button class="login-btn" onclick="logout()" style="font-size:0.8rem;">LOGOUT</button>
+                    </div>
+                `;
+            } else {
+                authDiv.innerHTML = `<button class="login-btn" onclick="signIn()"><i class="fas fa-sign-in-alt"></i> SIGN IN</button>`;
+            }
+        });
+
+        // --- LANGUAGE DATA ---
+        const langData = {
+            en: { nav_updates: "Updates", nav_featured: "Featured", nav_ranking: "Ranking", nav_creators: "Creators", search_ph: "Search title...", sec_title: "LATEST <span>UPDATES</span>" },
+            ms: { nav_updates: "Terkini", nav_featured: "Pilihan", nav_ranking: "Ranking", nav_creators: "Pelukis", search_ph: "Cari tajuk...", sec_title: "KOMIK <span>TERKINI</span>" }
+        };
+        let currentLang = 'en';
+
+        // --- FETCH DATA ---
+        onValue(ref(db, 'series'), (snapshot) => {
             const data = snapshot.val();
+            grid.innerHTML = '';
 
             if (!data) {
-                grid.innerHTML = '<p>No comics found yet.</p>';
+                grid.innerHTML = '<p style="text-align:center; width:100%; color:#666;">No comics found in database.</p>';
                 return;
             }
 
-            // Convert object to array & Sort
-            const seriesList = Object.keys(data).map(key => {
-                return { id: key, ...data[key] };
-            });
-            seriesList.sort((a, b) => b.last_updated - a.last_updated);
+            allSeriesData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
+            allSeriesData.sort((a, b) => b.last_updated - a.last_updated);
 
-            seriesList.forEach(s => {
+            renderGrid(allSeriesData);
+        });
+
+        // --- FUNCTION: HANDLE CLICK & UPDATE VIEWS ---
+        function handleComicClick(s) {
+            openModal(s);
+            const seriesRef = ref(db, `series/${s.id}`);
+            runTransaction(seriesRef, (currentData) => {
+                if (currentData) {
+                    currentData.views = (currentData.views || 0) + 1;
+                }
+                return currentData;
+            }).catch(err => console.error("Failed to increment view:", err));
+        }
+
+        // --- RENDER GRID ---
+        function renderGrid(list) {
+            grid.innerHTML = '';
+            list.forEach(s => {
                 const epCount = s.episodes ? Object.keys(s.episodes).length : 0;
-                
-                // AMBIL DATA AUTHOR
-                const authorName = s.author ? s.author : "Unknown Author";
+                const authorName = s.author ? s.author : "Unknown Artist";
+                const realViews = s.views || 0;
+                const realLikes = s.likes || 0;
 
-                // Buat Kad
                 const card = document.createElement('div');
                 card.className = 'card';
-                card.onclick = () => openModal(s);
+                card.onclick = () => handleComicClick(s);
 
-                // UPDATE HTML KAD (CSS updated: object-fit: contain)
                 card.innerHTML = `
                     <div class="card-img-wrap">
-                        <img src="${s.cover}" alt="${s.title}">
+                        <span class="card-updated">NEW</span>
+                        <img src="${s.cover}" alt="${s.title}" loading="lazy">
                     </div>
                     <div class="card-info">
                         <h3 class="card-title">${s.title}</h3>
                         <p class="card-author">By: ${authorName}</p>
                         
-                        <div class="card-meta">
-                            <span class="ep-badge">${epCount} EPISODES</span>
-                            <span>UPDATED</span>
+                        <div class="card-stats">
+                            <span class="stat-item"><i class="fas fa-eye"></i> ${formatNumber(realViews)}</span>
+                            <span class="stat-item"><i class="fas fa-heart"></i> ${formatNumber(realLikes)}</span>
+                            <span class="ep-badge">${epCount} EP</span>
                         </div>
                     </div>
                 `;
                 grid.appendChild(card);
             });
+        }
+
+        // --- SEARCH FUNCTION ---
+        document.getElementById('searchInput').addEventListener('keyup', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = allSeriesData.filter(s => s.title.toLowerCase().includes(term));
+            renderGrid(filtered);
         });
 
-        // --- MODAL LOGIC (DENGAN COVER DI ATAS) ---
-        window.openModal = function(seriesData) {
-            
-            // 1. Set Tajuk Modal
-            document.getElementById('modalTitle').innerText = seriesData.title;
-            
-            const listContainer = document.getElementById('modalList');
-            listContainer.innerHTML = ''; // Kosongkan list dulu
+        // --- LANGUAGE SWITCHER ---
+        window.toggleLanguage = () => {
+            currentLang = currentLang === 'en' ? 'ms' : 'en';
+            document.getElementById('langText').innerText = currentLang.toUpperCase();
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (key === 'sec_title') el.innerHTML = langData[currentLang][key];
+                else el.innerText = langData[currentLang][key];
+            });
+            const searchInput = document.getElementById('searchInput');
+            searchInput.placeholder = langData[currentLang][searchInput.getAttribute('data-lang-ph')];
+        };
 
-            // 2. TAMBAH GAMBAR COVER (Modal pun guna full size contain)
+        // --- MODAL LOGIC ---
+        window.openModal = function(seriesData) {
+            document.getElementById('modalTitle').innerText = seriesData.title;
+            const listContainer = document.getElementById('modalList');
+            listContainer.innerHTML = '';
+
             if(seriesData.cover) {
                 const coverImg = document.createElement('img');
                 coverImg.src = seriesData.cover;
-                
-                // Style supaya gambar nampak cantik dalam modal
-                coverImg.style.width = "100%";
-                coverImg.style.height = "auto"; // Auto height supaya full cover nampak
-                coverImg.style.maxHeight = "300px";
-                coverImg.style.objectFit = "contain"; // Full cover
-                coverImg.style.backgroundColor = "#000";
-                coverImg.style.borderRadius = "0 0 10px 10px";
-                coverImg.style.marginBottom = "20px";
-                coverImg.style.borderBottom = "2px solid #ff6600";
-                
+                coverImg.style.cssText = "width:100%; height:250px; object-fit:contain; background:#0a0a0a; border-bottom:2px solid var(--accent); margin-bottom:10px;";
                 listContainer.appendChild(coverImg);
             }
 
-            // 3. Masukkan Senarai Episod (Logik asal kekal)
             if (seriesData.episodes) {
                 const episodes = Object.keys(seriesData.episodes).map(k => seriesData.episodes[k]);
                 episodes.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
@@ -215,32 +313,30 @@
                     const urlTitle = encodeURIComponent(seriesData.title);
                     const urlEp = encodeURIComponent(ep.name);
                     link.href = `read.html?title=${urlTitle}&ep=${urlEp}`;
-                    
-                    link.innerHTML = `
-                        <span class="ep-name">${ep.name}</span>
-                        <span class="ep-date"><i class="fas fa-chevron-right"></i></span>
-                    `;
+                    link.innerHTML = `<span class="ep-name">${ep.name}</span><span class="ep-date" style="font-size:0.8rem; color:#555">READ <i class="fas fa-chevron-right" style="color:var(--accent)"></i></span>`;
                     listContainer.appendChild(link);
                 });
             } else {
-                const msg = document.createElement('div');
-                msg.innerHTML = "No episodes yet.";
-                msg.style.padding = "20px";
-                msg.style.textAlign = "center";
-                msg.style.color = "#666";
-                listContainer.appendChild(msg);
+                listContainer.innerHTML += '<div style="padding:30px; text-align:center; color:#666;">No episodes uploaded yet.</div>';
             }
-
             document.getElementById('epModal').classList.add('active');
         }
 
-        window.closeModal = function() {
-            document.getElementById('epModal').classList.remove('active');
-        }
-
+        window.closeModal = () => document.getElementById('epModal').classList.remove('active');
         document.getElementById('epModal').addEventListener('click', (e) => {
             if (e.target === document.getElementById('epModal')) closeModal();
         });
+
+        function formatNumber(num) {
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+            return num;
+        }
+
+        window.toggleLanguage = toggleLanguage;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.signIn = signIn;
+        window.logout = logout;
 
     </script>
 </body>
