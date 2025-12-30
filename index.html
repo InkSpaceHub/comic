@@ -11,7 +11,7 @@
     
     <style>
         /* --- PREMIUM DARK THEME --- */
-        :root { --bg-body: #050505; --bg-card: #121212; --bg-nav: rgba(10, 10, 10, 0.85); --accent: #ff6600; --accent-glow: rgba(255, 102, 0, 0.4); --text-main: #ffffff; --text-muted: #888888; --border: 1px solid #333; }
+        :root { --bg-body: #050505; --bg-card: #121212; --bg-nav: rgba(10, 10, 10, 0.95); --accent: #ff6600; --accent-glow: rgba(255, 102, 0, 0.4); --text-main: #ffffff; --text-muted: #888888; --border: 1px solid #333; }
         * { box-sizing: border-box; }
         body { margin: 0; padding: 0; font-family: 'Roboto Condensed', sans-serif; background-color: var(--bg-body); color: var(--text-main); background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; min-height: 100vh; }
         
@@ -33,52 +33,63 @@
         .lang-switch { font-family: 'Teko'; font-size: 1.2rem; cursor: pointer; color: #888; transition: 0.3s; display: flex; gap: 5px; align-items: center; }
         .lang-switch:hover { color: #fff; }
 
-        /* AUTH BUTTON STYLES (NEW) */
-        .login-btn { 
-            color: #ccc; text-decoration: none; font-weight: 700; font-size: 1rem; 
-            text-transform: uppercase; font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; 
-            transition: 0.3s; cursor: pointer; background: none; border: none; 
-            display: flex; align-items: center; gap: 8px;
-        }
+        .login-btn { color: #ccc; text-decoration: none; font-weight: 700; font-size: 1rem; text-transform: uppercase; font-family: 'Rajdhani', sans-serif; letter-spacing: 1px; transition: 0.3s; cursor: pointer; background: none; border: none; display: flex; align-items: center; gap: 8px; }
         .login-btn:hover { color: var(--accent); }
         .user-profile { display: flex; align-items: center; gap: 10px; }
         .user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--accent); }
 
-        /* CONTENT */
-        .container { max-width: 1240px; margin: 0 auto; padding: 40px 20px; }
+        .mobile-menu-btn { display: none; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; margin-left: 10px; }
+        .mobile-nav { display: none; position: fixed; top: 75px; left: 0; width: 100%; background: rgba(15, 15, 15, 0.98); border-bottom: 2px solid var(--accent); z-index: 99; flex-direction: column; box-shadow: 0 10px 20px rgba(0,0,0,0.8); animation: slideDown 0.3s ease; }
+        .mobile-nav.active { display: flex; }
+        .mobile-link { padding: 15px 30px; color: #fff; text-decoration: none; font-family: 'Rajdhani'; font-size: 1.1rem; text-transform: uppercase; border-bottom: 1px solid #333; font-weight: bold; }
+        .mobile-link:hover { background: #222; color: var(--accent); padding-left: 40px; transition: 0.2s; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* FEATURED BANNER (NEW) */
+        .featured-wrapper { margin-bottom: 40px; border-radius: 12px; overflow: hidden; position: relative; height: 350px; border: 1px solid #333; display: flex; align-items: flex-end; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        .banner-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; filter: brightness(0.6); transition: 0.5s; }
+        .featured-wrapper:hover .banner-img { transform: scale(1.02); filter: brightness(0.8); }
+        .banner-content { position: relative; z-index: 10; padding: 40px; width: 100%; background: linear-gradient(to top, #000 10%, transparent); }
+        .banner-tag { background: var(--accent); color: #000; padding: 5px 12px; font-weight: bold; border-radius: 4px; font-family: 'Rajdhani'; font-size: 0.9rem; display: inline-block; margin-bottom: 10px; }
+        .banner-title { font-family: 'Teko'; font-size: 3.5rem; line-height: 1; margin: 0; text-shadow: 2px 2px 0 #000; }
+        .banner-meta { color: #ccc; margin-top: 10px; font-size: 1.1rem; font-family: 'Rajdhani'; }
+
+        /* LAYOUT WRAPPER (GRID + SIDEBAR) */
+        .container { max-width: 1240px; margin: 0 auto; padding: 30px 20px; }
+        .layout-wrapper { display: flex; gap: 40px; }
+        .main-content { flex: 3; }
+        .sidebar { flex: 1; min-width: 300px; }
+
         .section-header { border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
         .section-title { font-family: 'Teko'; font-size: 2.5rem; color: #fff; margin: 0; line-height: 1; text-transform: uppercase; letter-spacing: 1px; border-left: 5px solid var(--accent); padding-left: 15px; }
         .section-title span { color: var(--accent); }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 30px; }
         
-        /* PREMIUM CARD DESIGN */
-        .card { background: var(--bg-card); border: 1px solid #222; border-radius: 12px; overflow: hidden; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; }
+        
+        .card { background: var(--bg-card); border: 1px solid #222; border-radius: 12px; overflow: hidden; transition: all 0.4s; position: relative; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 15px 30px rgba(255, 102, 0, 0.15); }
-        
-        /* --- PERUBAHAN CSS UNTUK FULL COVER --- */
-        .card-img-wrap { 
-            height: 320px; 
-            overflow: hidden; 
-            position: relative; 
-            background: #0a0a0a; 
-        }
-        .card-img-wrap img { 
-            width: 100%; height: 100%; 
-            object-fit: contain; 
-            object-position: center;
-            transition: 0.5s; 
-        }
+        .card-img-wrap { height: 280px; overflow: hidden; position: relative; background: #0a0a0a; flex-shrink: 0; }
+        .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: top center; transition: 0.5s; }
         .card:hover .card-img-wrap img { transform: scale(1.05); opacity: 0.9; }
-        /* ------------------------------------ */
-
-        .card-updated { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #000; padding: 3px 8px; font-size: 0.75rem; font-weight: bold; border-radius: 4px; z-index: 2; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .card-info { padding: 15px; }
-        .card-title { font-family: 'Teko'; font-size: 1.6rem; margin: 0; color: #fff; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .card-author { color: #666; font-size: 0.85rem; margin: 2px 0 12px 0; font-family: 'Rajdhani'; text-transform: uppercase; letter-spacing: 1px; }
-        .card-stats { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #222; padding-top: 10px; margin-top: 5px; color: #888; font-size: 0.85rem; font-family: 'Rajdhani'; font-weight: 600; }
-        .stat-item { display: flex; align-items: center; gap: 5px; }
-        .stat-item i { color: var(--accent); font-size: 0.8rem; }
+        .card-updated { position: absolute; top: 10px; right: 10px; background: var(--accent); color: #000; padding: 2px 6px; font-size: 0.7rem; font-weight: bold; border-radius: 4px; z-index: 2; }
+        .card-info { padding: 15px; flex-grow: 1; display: flex; flex-direction: column; }
+        .card-title { font-family: 'Teko'; font-size: 1.5rem; margin: 0; color: #fff; line-height: 1.1; height: auto; min-height: 1.6rem; margin-bottom: 5px; }
+        .card-author { color: #666; font-size: 0.85rem; margin-bottom: 10px; font-family: 'Rajdhani'; text-transform: uppercase; letter-spacing: 1px; }
+        .card-stats { margin-top: auto; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #222; padding-top: 10px; color: #888; font-size: 0.8rem; font-family: 'Rajdhani'; font-weight: 600; }
+        .stat-item { display: flex; align-items: center; gap: 4px; }
+        .stat-item i { color: var(--accent); }
         .ep-badge { background: #222; color: #ccc; border: 1px solid #333; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
+
+        /* SIDEBAR LIST (NEW) */
+        .sidebar-list { background: #111; border: 1px solid #333; border-radius: 12px; padding: 20px; }
+        .top-item { display: flex; gap: 15px; margin-bottom: 20px; cursor: pointer; border-bottom: 1px solid #222; padding-bottom: 15px; transition:0.2s; }
+        .top-item:last-child { border: none; margin: 0; padding: 0; }
+        .top-item:hover { background: rgba(255,255,255,0.05); border-radius:8px; padding:10px; margin-left:-10px; width:calc(100% + 20px); }
+        .rank-num { font-family: 'Teko'; font-size: 2rem; color: #444; line-height: 1; width: 30px; text-align: center; }
+        .rank-num.top-3 { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .top-info h4 { margin: 0; font-family: 'Teko'; font-size: 1.3rem; line-height: 1.1; color: #fff; }
+        .top-info span { font-size: 0.8rem; color: #888; font-family: 'Rajdhani'; }
+        .top-info .likes { color: var(--accent); font-weight: bold; margin-top: 5px; display: block; font-size: 0.9rem; }
 
         /* MODAL */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 2000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
@@ -99,8 +110,19 @@
             .nav-center { display: none; }
             .nav-right { width: 100%; justify-content: space-between; }
             .search-box { width: 70%; }
+            .mobile-menu-btn { display: block; }
+            
+            /* Responsive Layout */
+            .layout-wrapper { flex-direction: column; }
+            .sidebar { width: 100%; order: 2; } 
+            .main-content { width: 100%; order: 1; }
+            
             .grid { grid-template-columns: repeat(2, 1fr); gap: 15px; }
-            .card-img-wrap { height: 240px; }
+            .card-img-wrap { height: 230px; }
+            .card-title { font-size: 1.3rem; }
+            .container { padding: 20px 10px; }
+            .featured-wrapper { height: 250px; }
+            .banner-title { font-size: 2.5rem; }
         }
     </style>
 </head>
@@ -115,6 +137,7 @@
                 <a href="#" class="nav-link" data-lang-key="nav_featured">Featured</a>
                 <a href="#" class="nav-link" data-lang-key="nav_ranking">Ranking</a>
                 <a href="#" class="nav-link" data-lang-key="nav_creators">Creators</a>
+                <a href="#" class="nav-link">Favorite</a>
             </div>
         </div>
         <div class="nav-right">
@@ -125,21 +148,45 @@
             <div class="lang-switch" onclick="toggleLanguage()">
                 <span id="langText">EN</span> <i class="fas fa-globe"></i>
             </div>
-            
             <div id="authSection">
                 <button class="login-btn" onclick="signIn()"><i class="fas fa-sign-in-alt"></i> SIGN IN</button>
             </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
         </div>
     </nav>
 
+    <div class="mobile-nav" id="mobileMenu">
+        <a href="#" class="mobile-link" data-lang-key="nav_updates">Updates</a>
+        <a href="#" class="mobile-link" data-lang-key="nav_featured">Featured</a>
+        <a href="#" class="mobile-link" data-lang-key="nav_ranking">Ranking</a>
+        <a href="#" class="mobile-link" data-lang-key="nav_creators">Creators</a>
+        <a href="#" class="mobile-link">Favorite</a>
+    </div>
+
     <div class="container">
-        <div class="section-header">
-            <h2 class="section-title" data-lang-key="sec_title">LATEST <span>UPDATES</span></h2>
-        </div>
-        <div class="grid" id="series-grid">
-            <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
-                <i class="fas fa-circle-notch fa-spin" style="color:var(--accent); font-size:2rem;"></i>
-                <p style="color:#666; margin-top:10px;">Accessing Mainframe...</p>
+        
+        <div id="banner-container" class="featured-wrapper" style="display:none;">
+            </div>
+
+        <div class="layout-wrapper">
+            <div class="main-content">
+                <div class="section-header">
+                    <h2 class="section-title" data-lang-key="sec_title">LATEST <span>UPDATES</span></h2>
+                </div>
+                <div class="grid" id="series-grid">
+                    <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                        <i class="fas fa-circle-notch fa-spin" style="color:var(--accent); font-size:2rem;"></i>
+                        <p style="color:#666; margin-top:10px;">Accessing Mainframe...</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="section-header">
+                    <h2 class="section-title" style="font-size:1.8rem">HOTTEST <span>TOP 5</span></h2>
+                </div>
+                <div class="sidebar-list" id="top-list">
+                    </div>
             </div>
         </div>
     </div>
@@ -157,7 +204,6 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getDatabase, ref, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-        // IMPORT AUTH (NEW)
         import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
         const firebaseConfig = {
@@ -176,92 +222,121 @@
         const provider = new GoogleAuthProvider();
 
         const grid = document.getElementById('series-grid');
+        const bannerContainer = document.getElementById('banner-container');
+        const topList = document.getElementById('top-list');
         let allSeriesData = []; 
 
-        // --- AUTH LOGIC (NEW) ---
-        window.signIn = () => {
-            signInWithPopup(auth, provider).catch((error) => alert("Login Failed: " + error.message));
-        };
+        window.toggleMobileMenu = () => { document.getElementById('mobileMenu').classList.toggle('active'); }
+        window.signIn = () => { signInWithPopup(auth, provider).catch((error) => alert("Login Failed: " + error.message)); };
+        window.logout = () => { signOut(auth).then(() => location.reload()); };
 
-        window.logout = () => {
-            signOut(auth).then(() => location.reload());
-        };
-
-        // Check Login Status & Update Header
         onAuthStateChanged(auth, (user) => {
             const authDiv = document.getElementById('authSection');
             if (user) {
-                authDiv.innerHTML = `
-                    <div class="user-profile">
-                        <img src="${user.photoURL}" class="user-avatar" title="${user.displayName}">
-                        <button class="login-btn" onclick="logout()" style="font-size:0.8rem;">LOGOUT</button>
-                    </div>
-                `;
+                authDiv.innerHTML = `<div class="user-profile"><img src="${user.photoURL}" class="user-avatar" title="${user.displayName}"><button class="login-btn" onclick="logout()" style="font-size:0.8rem;">LOGOUT</button></div>`;
             } else {
                 authDiv.innerHTML = `<button class="login-btn" onclick="signIn()"><i class="fas fa-sign-in-alt"></i> SIGN IN</button>`;
             }
         });
 
-        // --- LANGUAGE DATA ---
         const langData = {
             en: { nav_updates: "Updates", nav_featured: "Featured", nav_ranking: "Ranking", nav_creators: "Creators", search_ph: "Search title...", sec_title: "LATEST <span>UPDATES</span>" },
             ms: { nav_updates: "Terkini", nav_featured: "Pilihan", nav_ranking: "Ranking", nav_creators: "Pelukis", search_ph: "Cari tajuk...", sec_title: "KOMIK <span>TERKINI</span>" }
         };
         let currentLang = 'en';
 
-        // --- FETCH DATA ---
         onValue(ref(db, 'series'), (snapshot) => {
             const data = snapshot.val();
             grid.innerHTML = '';
-
-            if (!data) {
-                grid.innerHTML = '<p style="text-align:center; width:100%; color:#666;">No comics found in database.</p>';
-                return;
-            }
+            if (!data) { grid.innerHTML = '<p style="text-align:center; width:100%; color:#666;">No comics found.</p>'; return; }
 
             allSeriesData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
-            allSeriesData.sort((a, b) => b.last_updated - a.last_updated);
+            
+            // 1. Render Banner (Find 'isFeatured' = true from Admin)
+            const featured = allSeriesData.find(s => s.isFeatured === true);
+            if(featured) renderBanner(featured);
+            else bannerContainer.style.display = 'none';
 
+            // 2. Render Sidebar (Top 5 by Likes)
+            const topSeries = [...allSeriesData].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 5);
+            renderSidebar(topSeries);
+
+            // 3. Render Main Grid (Sorted by Date)
+            allSeriesData.sort((a, b) => b.last_updated - a.last_updated);
             renderGrid(allSeriesData);
         });
 
-        // --- FUNCTION: HANDLE CLICK & UPDATE VIEWS ---
-        function handleComicClick(s) {
-            openModal(s);
-            const seriesRef = ref(db, `series/${s.id}`);
-            runTransaction(seriesRef, (currentData) => {
-                if (currentData) {
-                    currentData.views = (currentData.views || 0) + 1;
-                }
-                return currentData;
-            }).catch(err => console.error("Failed to increment view:", err));
+        function renderBanner(s) {
+            bannerContainer.style.display = 'block';
+            // Note: We need a manual click handler because we pass ID string
+            bannerContainer.innerHTML = `
+                <div class="featured-banner" style="width:100%; height:100%; position:relative; display:flex; align-items:flex-end; cursor:pointer;" onclick="handleComicClick('${s.id}')">
+                    <img src="${s.cover}" class="banner-img">
+                    <div class="banner-content">
+                        <span class="banner-tag">FEATURED COMIC</span>
+                        <h1 class="banner-title">${s.title}</h1>
+                        <div class="banner-meta">By ${s.author} • <i class="fas fa-eye"></i> ${formatNumber(s.views||0)}</div>
+                    </div>
+                </div>
+            `;
+            // Re-attach click manually for inline handler to work
+            const banner = bannerContainer.querySelector('.featured-banner');
+            banner.onclick = () => handleComicClick(s); 
         }
 
-        // --- RENDER GRID ---
+        function renderSidebar(list) {
+            topList.innerHTML = '';
+            list.forEach((s, index) => {
+                const rankClass = index < 3 ? 'top-3' : '';
+                // Using a closure-like approach for onclick with ID
+                const item = document.createElement('div');
+                item.className = 'top-item';
+                item.onclick = () => handleComicClick(s);
+                item.innerHTML = `
+                    <div class="rank-num ${rankClass}">${index + 1}</div>
+                    <div class="top-info">
+                        <h4>${s.title}</h4>
+                        <span>${s.author}</span>
+                        <span class="likes"><i class="fas fa-heart"></i> ${formatNumber(s.likes||0)} Likes</span>
+                    </div>
+                `;
+                topList.appendChild(item);
+            });
+        }
+
+        function handleComicClick(s) {
+            // Support passing string ID or object
+            const seriesId = typeof s === 'string' ? s : s.id;
+            const seriesObj = typeof s === 'string' ? allSeriesData.find(item => item.id === s) : s;
+            
+            if(seriesObj) {
+                openModal(seriesObj);
+                const seriesRef = ref(db, `series/${seriesId}`);
+                runTransaction(seriesRef, (curr) => { if(curr) curr.views = (curr.views||0)+1; return curr; });
+            }
+        }
+
         function renderGrid(list) {
             grid.innerHTML = '';
             list.forEach(s => {
                 const epCount = s.episodes ? Object.keys(s.episodes).length : 0;
                 const authorName = s.author ? s.author : "Unknown Artist";
-                const realViews = s.views || 0;
-                const realLikes = s.likes || 0;
-
+                
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => handleComicClick(s);
 
                 card.innerHTML = `
                     <div class="card-img-wrap">
-                        <span class="card-updated">NEW</span>
+                        <span class="card-updated">UP</span>
                         <img src="${s.cover}" alt="${s.title}" loading="lazy">
                     </div>
                     <div class="card-info">
                         <h3 class="card-title">${s.title}</h3>
                         <p class="card-author">By: ${authorName}</p>
-                        
                         <div class="card-stats">
-                            <span class="stat-item"><i class="fas fa-eye"></i> ${formatNumber(realViews)}</span>
-                            <span class="stat-item"><i class="fas fa-heart"></i> ${formatNumber(realLikes)}</span>
+                            <span class="stat-item"><i class="fas fa-eye"></i> ${formatNumber(s.views||0)}</span>
+                            <span class="stat-item"><i class="fas fa-heart"></i> ${formatNumber(s.likes||0)}</span>
                             <span class="ep-badge">${epCount} EP</span>
                         </div>
                     </div>
@@ -270,14 +345,11 @@
             });
         }
 
-        // --- SEARCH FUNCTION ---
         document.getElementById('searchInput').addEventListener('keyup', (e) => {
             const term = e.target.value.toLowerCase();
-            const filtered = allSeriesData.filter(s => s.title.toLowerCase().includes(term));
-            renderGrid(filtered);
+            renderGrid(allSeriesData.filter(s => s.title.toLowerCase().includes(term)));
         });
 
-        // --- LANGUAGE SWITCHER ---
         window.toggleLanguage = () => {
             currentLang = currentLang === 'en' ? 'ms' : 'en';
             document.getElementById('langText').innerText = currentLang.toUpperCase();
@@ -286,11 +358,9 @@
                 if (key === 'sec_title') el.innerHTML = langData[currentLang][key];
                 else el.innerText = langData[currentLang][key];
             });
-            const searchInput = document.getElementById('searchInput');
-            searchInput.placeholder = langData[currentLang][searchInput.getAttribute('data-lang-ph')];
+            document.getElementById('searchInput').placeholder = langData[currentLang]['search_ph'];
         };
 
-        // --- MODAL LOGIC ---
         window.openModal = function(seriesData) {
             document.getElementById('modalTitle').innerText = seriesData.title;
             const listContainer = document.getElementById('modalList');
@@ -323,9 +393,7 @@
         }
 
         window.closeModal = () => document.getElementById('epModal').classList.remove('active');
-        document.getElementById('epModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('epModal')) closeModal();
-        });
+        document.getElementById('epModal').addEventListener('click', (e) => { if (e.target === document.getElementById('epModal')) closeModal(); });
 
         function formatNumber(num) {
             if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
@@ -337,6 +405,10 @@
         window.closeModal = closeModal;
         window.signIn = signIn;
         window.logout = logout;
+        window.toggleMobileMenu = toggleMobileMenu;
+        
+        // Expose helper specifically for banner onclick
+        window.handleComicClick = handleComicClick; 
 
     </script>
 </body>
