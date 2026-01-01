@@ -45,8 +45,9 @@
         .mobile-link:hover { background: #222; color: var(--accent); padding-left: 40px; transition: 0.2s; }
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* FEATURED BANNER (NEW) */
-        .featured-wrapper { margin-bottom: 40px; border-radius: 12px; overflow: hidden; position: relative; height: 350px; border: 1px solid #333; display: flex; align-items: flex-end; box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        /* FEATURED BANNER */
+        .featured-wrapper { margin-bottom: 40px; border-radius: 12px; overflow: hidden; position: relative; height: 350px; border: 1px solid #333; display: flex; align-items: flex-end; box-shadow: 0 10px 40px rgba(0,0,0,0.5); cursor: pointer; transition: 0.3s; }
+        .featured-wrapper:hover { border-color: var(--accent); }
         .banner-img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; filter: brightness(0.6); transition: 0.5s; }
         .featured-wrapper:hover .banner-img { transform: scale(1.02); filter: brightness(0.8); }
         .banner-content { position: relative; z-index: 10; padding: 40px; width: 100%; background: linear-gradient(to top, #000 10%, transparent); }
@@ -54,7 +55,7 @@
         .banner-title { font-family: 'Teko'; font-size: 3.5rem; line-height: 1; margin: 0; text-shadow: 2px 2px 0 #000; }
         .banner-meta { color: #ccc; margin-top: 10px; font-size: 1.1rem; font-family: 'Rajdhani'; }
 
-        /* LAYOUT WRAPPER (GRID + SIDEBAR) */
+        /* LAYOUT */
         .container { max-width: 1240px; margin: 0 auto; padding: 30px 20px; }
         .layout-wrapper { display: flex; gap: 40px; }
         .main-content { flex: 3; }
@@ -80,7 +81,7 @@
         .stat-item i { color: var(--accent); }
         .ep-badge { background: #222; color: #ccc; border: 1px solid #333; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; }
 
-        /* SIDEBAR LIST (NEW) */
+        /* SIDEBAR LIST */
         .sidebar-list { background: #111; border: 1px solid #333; border-radius: 12px; padding: 20px; }
         .top-item { display: flex; gap: 15px; margin-bottom: 20px; cursor: pointer; border-bottom: 1px solid #222; padding-bottom: 15px; transition:0.2s; }
         .top-item:last-child { border: none; margin: 0; padding: 0; }
@@ -112,7 +113,6 @@
             .search-box { width: 70%; }
             .mobile-menu-btn { display: block; }
             
-            /* Responsive Layout */
             .layout-wrapper { flex-direction: column; }
             .sidebar { width: 100%; order: 2; } 
             .main-content { width: 100%; order: 1; }
@@ -245,50 +245,60 @@
         };
         let currentLang = 'en';
 
+        // --- FETCH DATA & REALTIME UPDATE (FIXED LOGIC) ---
         onValue(ref(db, 'series'), (snapshot) => {
             const data = snapshot.val();
             grid.innerHTML = '';
-            if (!data) { grid.innerHTML = '<p style="text-align:center; width:100%; color:#666;">No comics found.</p>'; return; }
-
-            allSeriesData = Object.keys(data).map(key => ({ id: key, ...data[key] }));
             
-            // 1. Render Banner (Find 'isFeatured' = true from Admin)
+            if (!data) { 
+                grid.innerHTML = '<p style="text-align:center; width:100%; color:#666;">No comics found.</p>'; 
+                bannerContainer.style.display = 'none';
+                return; 
+            }
+
+            // 1. FILTER ARCHIVED ITEMS (KEY FIX)
+            // Hanya ambil item yang TIDAK di-archive (isArchived != true)
+            allSeriesData = Object.keys(data)
+                .map(key => ({ id: key, ...data[key] }))
+                .filter(s => s.isArchived !== true);
+
+            if(allSeriesData.length === 0) {
+                grid.innerHTML = '<p style="text-align:center; width:100%; color:#666;">No active comics available.</p>';
+                bannerContainer.style.display = 'none';
+                return;
+            }
+
+            // 2. RENDER BANNER (FIND FEATURED FROM ACTIVE LIST)
             const featured = allSeriesData.find(s => s.isFeatured === true);
             if(featured) renderBanner(featured);
             else bannerContainer.style.display = 'none';
 
-            // 2. Render Sidebar (Top 5 by Likes)
+            // 3. RENDER SIDEBAR (SORT BY LIKES)
             const topSeries = [...allSeriesData].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 5);
             renderSidebar(topSeries);
 
-            // 3. Render Main Grid (Sorted by Date)
+            // 4. RENDER MAIN GRID (SORT BY DATE)
             allSeriesData.sort((a, b) => b.last_updated - a.last_updated);
             renderGrid(allSeriesData);
         });
 
         function renderBanner(s) {
-            bannerContainer.style.display = 'block';
-            // Note: We need a manual click handler because we pass ID string
+            bannerContainer.style.display = 'flex';
             bannerContainer.innerHTML = `
-                <div class="featured-banner" style="width:100%; height:100%; position:relative; display:flex; align-items:flex-end; cursor:pointer;" onclick="handleComicClick('${s.id}')">
-                    <img src="${s.cover}" class="banner-img">
-                    <div class="banner-content">
-                        <span class="banner-tag">FEATURED COMIC</span>
-                        <h1 class="banner-title">${s.title}</h1>
-                        <div class="banner-meta">By ${s.author} • <i class="fas fa-eye"></i> ${formatNumber(s.views||0)}</div>
-                    </div>
+                <img src="${s.cover}" class="banner-img">
+                <div class="banner-content">
+                    <span class="banner-tag">FEATURED COMIC</span>
+                    <h1 class="banner-title">${s.title}</h1>
+                    <div class="banner-meta">By ${s.author} • <i class="fas fa-eye"></i> ${formatNumber(s.views||0)}</div>
                 </div>
             `;
-            // Re-attach click manually for inline handler to work
-            const banner = bannerContainer.querySelector('.featured-banner');
-            banner.onclick = () => handleComicClick(s); 
+            bannerContainer.onclick = () => handleComicClick(s);
         }
 
         function renderSidebar(list) {
             topList.innerHTML = '';
             list.forEach((s, index) => {
                 const rankClass = index < 3 ? 'top-3' : '';
-                // Using a closure-like approach for onclick with ID
                 const item = document.createElement('div');
                 item.className = 'top-item';
                 item.onclick = () => handleComicClick(s);
@@ -305,7 +315,6 @@
         }
 
         function handleComicClick(s) {
-            // Support passing string ID or object
             const seriesId = typeof s === 'string' ? s : s.id;
             const seriesObj = typeof s === 'string' ? allSeriesData.find(item => item.id === s) : s;
             
@@ -320,12 +329,9 @@
             grid.innerHTML = '';
             list.forEach(s => {
                 const epCount = s.episodes ? Object.keys(s.episodes).length : 0;
-                const authorName = s.author ? s.author : "Unknown Artist";
-                
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.onclick = () => handleComicClick(s);
-
                 card.innerHTML = `
                     <div class="card-img-wrap">
                         <span class="card-updated">UP</span>
@@ -333,7 +339,7 @@
                     </div>
                     <div class="card-info">
                         <h3 class="card-title">${s.title}</h3>
-                        <p class="card-author">By: ${authorName}</p>
+                        <p class="card-author">By: ${s.author || 'Unknown'}</p>
                         <div class="card-stats">
                             <span class="stat-item"><i class="fas fa-eye"></i> ${formatNumber(s.views||0)}</span>
                             <span class="stat-item"><i class="fas fa-heart"></i> ${formatNumber(s.likes||0)}</span>
@@ -353,11 +359,7 @@
         window.toggleLanguage = () => {
             currentLang = currentLang === 'en' ? 'ms' : 'en';
             document.getElementById('langText').innerText = currentLang.toUpperCase();
-            document.querySelectorAll('[data-lang-key]').forEach(el => {
-                const key = el.getAttribute('data-lang-key');
-                if (key === 'sec_title') el.innerHTML = langData[currentLang][key];
-                else el.innerText = langData[currentLang][key];
-            });
+            document.querySelectorAll('[data-lang-key]').forEach(el => el.innerHTML = langData[currentLang][el.getAttribute('data-lang-key')]);
             document.getElementById('searchInput').placeholder = langData[currentLang]['search_ph'];
         };
 
@@ -376,14 +378,13 @@
             if (seriesData.episodes) {
                 const episodes = Object.keys(seriesData.episodes).map(k => seriesData.episodes[k]);
                 episodes.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
-
                 episodes.forEach(ep => {
                     const link = document.createElement('a');
                     link.className = 'episode-item';
                     const urlTitle = encodeURIComponent(seriesData.title);
                     const urlEp = encodeURIComponent(ep.name);
                     link.href = `read.html?title=${urlTitle}&ep=${urlEp}`;
-                    link.innerHTML = `<span class="ep-name">${ep.name}</span><span class="ep-date" style="font-size:0.8rem; color:#555">READ <i class="fas fa-chevron-right" style="color:var(--accent)"></i></span>`;
+                    link.innerHTML = `<span class="ep-name">${ep.name}</span><span style="font-size:0.8rem; color:#666">READ <i class="fas fa-chevron-right" style="color:var(--accent)"></i></span>`;
                     listContainer.appendChild(link);
                 });
             } else {
@@ -406,8 +407,6 @@
         window.signIn = signIn;
         window.logout = logout;
         window.toggleMobileMenu = toggleMobileMenu;
-        
-        // Expose helper specifically for banner onclick
         window.handleComicClick = handleComicClick; 
 
     </script>
