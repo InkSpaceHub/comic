@@ -36,6 +36,11 @@
         .nav-btn:hover { background: var(--accent); color: #000; border-color: var(--accent); }
         .nav-btn.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
 
+        /* MUSIC BUTTON STYLE (NEW) */
+        .music-btn { min-width: 50px; justify-content: center; }
+        .music-btn.playing { color: var(--accent); border-color: var(--accent); box-shadow: 0 0 10px var(--accent-glow); animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 102, 0, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(255, 102, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 102, 0, 0); } }
+
         /* CANVAS */
         .reader-container { max-width: 850px; margin: 0 auto; background: #000; box-shadow: 0 0 100px rgba(0,0,0,0.8); min-height: 100vh; border-left: 1px solid #222; border-right: 1px solid #222; }
         .comic-header { padding: 40px 20px; text-align: center; border-bottom: 1px solid #222; }
@@ -113,7 +118,16 @@
         <button class="nav-btn disabled" id="btnPrev"><i class="fas fa-chevron-left"></i> <span>Prev</span></button>
         <select class="chapter-select" id="chapterSelect"><option>Loading...</option></select>
         <button class="nav-btn disabled" id="btnNext"><span>Next</span> <i class="fas fa-chevron-right"></i></button>
+        
+        <button class="nav-btn music-btn" id="musicBtn" onclick="toggleMusic()" title="Play Background Music">
+            <i class="fas fa-volume-mute"></i>
+        </button>
     </div>
+
+    <audio id="bgMusic" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=lofi-study-112191.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 
     <div class="reader-container" id="readerCanvas">
         <div class="comic-header">
@@ -216,6 +230,28 @@
             }
         });
 
+        // --- NEW: MUSIC LOGIC ---
+        const audioEl = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicBtn');
+        
+        // Set volume tak terlalu kuat
+        audioEl.volume = 0.4;
+
+        window.toggleMusic = () => {
+            if (audioEl.paused) {
+                audioEl.play().then(() => {
+                    musicBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+                    musicBtn.classList.add('playing');
+                }).catch(e => {
+                    alert("Sila klik halaman dahulu untuk mainkan lagu.");
+                });
+            } else {
+                audioEl.pause();
+                musicBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+                musicBtn.classList.remove('playing');
+            }
+        };
+
         // --- NEW: SHARE LOGIC ---
         window.shareComic = () => {
             if (navigator.share) {
@@ -239,31 +275,25 @@
             const text = input.value.trim();
             if (!text) return;
 
-            // Save to Firebase (Real Database Path)
-            // Path: comments/SERIES_ID/
             push(ref(db, `comments/${currentSeriesId}`), {
                 user: currentUser.displayName,
                 avatar: currentUser.photoURL,
                 text: text,
-                timestamp: serverTimestamp() // Server time is safer
+                timestamp: serverTimestamp()
             });
 
             input.value = ""; 
         };
 
-        // --- LOAD COMMENTS FROM DB ---
         function loadComments(seriesId) {
             const commentsRef = ref(db, `comments/${seriesId}`);
-            // Use query to order if needed, but standard onValue is fine for now
             onValue(commentsRef, (snapshot) => {
                 const list = document.getElementById('commentsList');
-                list.innerHTML = ""; // Clear existing
+                list.innerHTML = "";
                 const data = snapshot.val();
 
                 if (data) {
-                    // Convert object to array and reverse (newest first usually)
                     const comments = Object.values(data).reverse(); 
-                    
                     comments.forEach(c => {
                         const timeString = c.timestamp ? new Date(c.timestamp).toLocaleString() : "Just now";
                         const item = document.createElement('div');
@@ -284,7 +314,6 @@
             });
         }
 
-        // READER LOGIC
         const titleEl = document.getElementById('comicTitle');
         const epEl = document.getElementById('comicEp');
         const pagesContainer = document.getElementById('pagesContainer');
@@ -310,7 +339,6 @@
                     });
 
                     if (foundSeries) {
-                        // LOAD COMMENTS ONCE ID IS FOUND
                         loadComments(currentSeriesId);
 
                         const likeCount = foundSeries.likes || 0;
@@ -402,6 +430,7 @@
         window.logout = logout;
         window.postComment = postComment;
         window.shareComic = shareComic;
+        window.toggleMusic = toggleMusic;
 
     </script>
 </body>
