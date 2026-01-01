@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Rajdhani:wght@500;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- PREMIUM DARK THEME (SAME AS BEFORE) --- */
+        /* --- PREMIUM DARK THEME (KEKAL) --- */
         :root { --bg-body: #050505; --bg-card: #121212; --bg-panel: rgba(20, 20, 20, 0.95); --accent: #ff6600; --accent-glow: rgba(255, 102, 0, 0.4); --text-main: #ffffff; --text-muted: #888888; --border: 1px solid #333; }
         body { background: var(--bg-body); color: var(--text-main); font-family: 'Roboto Condensed', sans-serif; margin: 0; padding: 0; background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; min-height: 100vh; }
         
@@ -41,22 +41,25 @@
         .btn-upload:hover { background: #ff8533; box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
         
         .btn-action-group { display: flex; gap: 10px; }
-        .btn-small { padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; border: 1px solid transparent; font-family: 'Rajdhani'; font-weight: bold; text-transform: uppercase; }
+        .btn-small { padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; border: 1px solid transparent; font-family: 'Rajdhani'; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
         .btn-delete { background: rgba(255, 0, 0, 0.1); border-color: #550000; color: #ff5555; }
         .btn-delete:hover { background: #ff0000; color: #fff; }
         .btn-edit { background: rgba(0, 255, 255, 0.1); border-color: #005555; color: #00ffff; }
         .btn-edit:hover { background: #00ffff; color: #000; }
         
-        /* FIX: Style Feature Button Active State */
-        .btn-feature { background: rgba(255, 215, 0, 0.1); border-color: #554400; color: #666; transition: 0.2s; }
+        /* FEATURE BUTTON STYLES */
+        .btn-feature { background: rgba(255, 215, 0, 0.1); border-color: #554400; color: #666; }
+        .btn-feature:hover { background: rgba(255, 215, 0, 0.3); color: #ffd700; }
         .btn-feature.active { background: #ffd700; color: #000; box-shadow: 0 0 10px #ffd700; border-color: #ffd700; }
         
-        .btn-save { background: #00ff00; color: #000; }
-        .btn-cancel { background: #555; color: #fff; }
+        /* ARCHIVE BUTTON STYLES */
+        .btn-archive { background: rgba(128, 128, 128, 0.1); border-color: #666; color: #888; }
+        .btn-archive:hover { background: #666; color: #fff; }
+        .btn-archive.archived { background: #444; color: #aaa; border-color: #333; position: relative; }
+        .btn-archive.archived::after { content: ''; position: absolute; width: 80%; height: 2px; background: #aaa; left: 10%; top: 50%; transform: rotate(-15deg); }
 
-        .file-preview { margin-top: 15px; padding: 15px; background: rgba(0,255,0,0.05); border: 1px solid rgba(0,255,0,0.2); border-radius: 6px; color: #0f0; font-family: 'monospace'; font-size: 0.9rem; min-height: 40px; display: flex; align-items: center; justify-content: center; text-align: center; }
-
-        /* MANAGE LIST */
+        /* Style for Archived Items in List */
+        .series-item.archived-item { opacity: 0.5; filter: grayscale(1); border: 1px dashed #444; }
         .series-item { background: #0a0a0a; border: 1px solid #333; margin-bottom: 15px; border-radius: 8px; overflow: hidden; transition: 0.3s; }
         .series-header { padding: 15px; display: flex; justify-content: space-between; align-items: flex-start; background: #151515; cursor: pointer; transition: 0.2s; gap: 10px; flex-wrap: wrap; }
         .series-header:hover { background: #222; }
@@ -80,6 +83,9 @@
         hr { border: 0; border-top: 1px solid #333; margin: 30px 0; }
         #seriesStatus { font-family: 'Rajdhani'; font-weight: bold; margin-top: 5px; font-size: 0.9rem; }
         
+        .btn-save { background: #00ff00; color: #000; }
+        .btn-cancel { background: #555; color: #fff; }
+
         @media (max-width: 600px) {
             .header { flex-direction: column; align-items: flex-start; }
             .tabs { font-size: 0.9rem; }
@@ -144,7 +150,10 @@
 
         <div id="managePanel" class="panel">
             <h2 style="font-family:'Teko'; color:var(--accent); margin-top:0;">DATABASE CONTENT</h2>
-            <p class="note" style="margin-bottom:20px;">Click <i class="fas fa-star" style="color:#ffd700"></i> to set as Banner. Use Edit to rename.</p>
+            <p class="note" style="margin-bottom:20px;">
+                <i class="fas fa-star" style="color:#ffd700"></i> Feature &nbsp;|&nbsp; 
+                <i class="fas fa-archive" style="color:#888"></i> Archive (Hide)
+            </p>
             <div id="manageList">
                 <p style="text-align:center; padding:40px; color:#666;"><i class="fas fa-circle-notch fa-spin"></i> Loading data...</p>
             </div>
@@ -321,11 +330,14 @@
                     const s = data[seriesKey];
                     const epCount = s.episodes ? Object.keys(s.episodes).length : 0;
                     const author = s.author || "Unknown";
-                    // FIX: Ensure boolean is properly converted
+                    
                     const isFeatured = s.isFeatured === true ? 'active' : '';
+                    const isArchived = s.isArchived === true;
+                    const archiveClass = isArchived ? 'archived' : '';
+                    const itemClass = isArchived ? 'series-item archived-item' : 'series-item';
 
                     let html = `
-                        <div class="series-item">
+                        <div class="${itemClass}">
                             <div class="series-header" onclick="toggleEpList(event, '${seriesKey}')">
                                 <div class="series-info">
                                     <strong>${s.title}</strong>
@@ -334,6 +346,8 @@
                                 <div class="btn-action-group">
                                     <button class="btn-small btn-feature ${isFeatured}" onclick="toggleFeature(event, '${seriesKey}', ${s.isFeatured === true})"><i class="fas fa-star"></i></button>
                                     
+                                    <button class="btn-small btn-archive ${archiveClass}" onclick="toggleArchive(event, '${seriesKey}', ${isArchived})"><i class="fas fa-archive"></i></button>
+
                                     <button class="btn-small btn-edit" onclick="toggleEditSeries(event, '${seriesKey}', '${s.title}', '${author}')"><i class="fas fa-pencil-alt"></i></button>
                                     <i class="fas fa-chevron-down" style="color:#666; margin-left:10px;"></i>
                                 </div>
@@ -386,34 +400,55 @@
             }, { onlyOnce: true });
         };
 
-        // --- NEW: TOGGLE FEATURED (FIXED) ---
+        // --- BUTTON TOGGLE FIXES (SMOOTHER) ---
+        
         window.toggleFeature = async (e, id, currentStatus) => {
-            e.stopPropagation(); // Prevents opening the list
+            e.stopPropagation(); e.preventDefault(); // Stop bubbling immediately
+            const btn = e.currentTarget;
+            
+            // Visual feedback first (Instant)
+            btn.classList.toggle('active');
+            const newStatus = !currentStatus;
+
             try {
-                // If it was true, make it false. If false/undefined, make it true.
-                const newStatus = !currentStatus; 
-                
-                await update(ref(db, `series/${id}`), {
-                    isFeatured: newStatus
-                });
-                // Realtime listener will auto-update the UI (add/remove 'active' class)
-            } catch(e) {
-                alert("Error: " + e.message);
+                await update(ref(db, `series/${id}`), { isFeatured: newStatus });
+            } catch(e) { 
+                console.error(e);
+                // Revert if error
+                btn.classList.toggle('active');
+                alert("Error updating feature status");
+            }
+        };
+
+        window.toggleArchive = async (e, id, currentStatus) => {
+            e.stopPropagation(); e.preventDefault(); // Stop bubbling immediately
+            const btn = e.currentTarget;
+            
+            // Visual feedback first
+            btn.classList.toggle('archived');
+            const row = btn.closest('.series-item');
+            if(row) row.classList.toggle('archived-item');
+
+            const newStatus = !currentStatus;
+
+            try {
+                await update(ref(db, `series/${id}`), { isArchived: newStatus });
+            } catch(e) { 
+                console.error(e);
+                // Revert if error
+                btn.classList.toggle('archived');
+                if(row) row.classList.toggle('archived-item');
+                alert("Error updating archive status");
             }
         };
 
         // --- UI FUNCTIONS ---
         window.toggleEpList = (e, id) => {
-            // Stronger check to prevent bubbling from buttons
             if(e.target.closest('button') || e.target.closest('.edit-mode-box')) return;
-            
             const el = document.getElementById(`epList-${id}`);
             const editBox = document.getElementById(`edit-series-${id}`);
             const icon = e.currentTarget.querySelector('.fa-chevron-down');
-            
-            // Close edit box if open
             editBox.classList.remove('active');
-
             if (el.style.display === 'block') {
                 el.style.display = 'none';
                 if(icon) icon.style.transform = "rotate(0deg)";
@@ -434,13 +469,10 @@
         window.saveSeries = async (id) => {
             const newTitle = document.getElementById(`input-title-${id}`).value.trim();
             const newAuthor = document.getElementById(`input-author-${id}`).value.trim();
-            
             if(!newTitle || !newAuthor) return alert("Title and Author cannot be empty.");
-
             try {
                 await update(ref(db, `series/${id}`), { title: newTitle, author: newAuthor });
                 alert("Series Updated!");
-                // No reload needed, onValue handles it
             } catch(e) { alert("Error updating: " + e.message); }
         };
 
@@ -459,7 +491,6 @@
         window.saveEpisode = async (seriesId, epId) => {
             const newName = document.getElementById(`input-ep-${epId}`).value.trim();
             if(!newName) return alert("Episode name cannot be empty.");
-
             try {
                 await update(ref(db, `series/${seriesId}/episodes/${epId}`), { name: newName });
                 alert("Episode Renamed!");
@@ -487,6 +518,7 @@
         window.saveEpisode = saveEpisode;
         window.deleteEpisode = deleteEpisode;
         window.toggleFeature = toggleFeature;
+        window.toggleArchive = toggleArchive;
 
     </script>
 </body>
