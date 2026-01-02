@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Rajdhani:wght@500;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- PREMIUM DARK THEME (KEKAL) --- */
+        /* --- PREMIUM DARK THEME --- */
         :root { --bg-body: #050505; --bg-card: #121212; --bg-panel: rgba(20, 20, 20, 0.95); --accent: #ff6600; --accent-glow: rgba(255, 102, 0, 0.4); --text-main: #ffffff; --text-muted: #888888; --border: 1px solid #333; }
         body { background: var(--bg-body); color: var(--text-main); font-family: 'Roboto Condensed', sans-serif; margin: 0; padding: 0; background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; min-height: 100vh; }
         
@@ -23,7 +23,7 @@
         .tab:hover { color: #fff; background: #151515; }
         .tab.active { border-bottom: 3px solid var(--accent); color: var(--accent); background: linear-gradient(to top, rgba(255,102,0,0.1), transparent); }
 
-        .container { max-width: 800px; margin: 20px auto; padding: 0 15px; padding-bottom: 50px; }
+        .container { max-width: 900px; margin: 20px auto; padding: 0 15px; padding-bottom: 50px; }
         .panel { display: none; background: var(--bg-panel); padding: 25px; border-radius: 12px; border: 1px solid #333; box-shadow: 0 0 50px rgba(0,0,0,0.5); }
         .panel.active { display: block; animation: fadeIn 0.5s; }
         @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
@@ -40,59 +40,61 @@
         .btn-upload { background: var(--accent); color: #000; box-shadow: 0 0 20px rgba(255,102,0,0.2); }
         .btn-upload:hover { background: #ff8533; box-shadow: 0 0 30px var(--accent-glow); transform: translateY(-2px); }
         
-        .btn-action-group { display: flex; gap: 10px; }
-        .btn-small { padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; border: 1px solid transparent; font-family: 'Rajdhani'; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
-        .btn-delete { background: rgba(255, 0, 0, 0.1); border-color: #550000; color: #ff5555; }
-        .btn-delete:hover { background: #ff0000; color: #fff; }
-        .btn-edit { background: rgba(0, 255, 255, 0.1); border-color: #005555; color: #00ffff; }
-        .btn-edit:hover { background: #00ffff; color: #000; }
+        /* TABLE STYLES */
+        .app-table { width: 100%; border-collapse: collapse; text-align: left; margin-top: 10px; }
+        .app-table th { background: #111; color: var(--accent); padding: 12px; font-family: 'Rajdhani'; text-transform: uppercase; font-size: 0.9rem; border-bottom: 2px solid #333; }
+        .app-table td { padding: 12px; border-bottom: 1px solid #222; color: #ddd; font-size: 0.95rem; vertical-align: middle; }
+        .app-table tr:hover { background: rgba(255,255,255,0.02); }
         
-        /* FEATURE BUTTON STYLES */
+        /* BADGES */
+        .badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; display: inline-block; }
+        .badge-pending { background: rgba(255, 200, 0, 0.15); color: #ffc800; border: 1px solid rgba(255, 200, 0, 0.3); }
+        .badge-approved { background: rgba(0, 255, 0, 0.15); color: #00ff00; border: 1px solid rgba(0, 255, 0, 0.3); }
+        .badge-rejected { background: rgba(255, 0, 0, 0.15); color: #ff4444; border: 1px solid rgba(255, 0, 0, 0.3); }
+
+        .btn-action-group { display: flex; gap: 5px; }
+        .btn-small { padding: 6px 12px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; border: 1px solid transparent; font-family: 'Rajdhani'; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
+        .btn-view { background: #333; color: #fff; }
+        .btn-view:hover { background: #555; }
+        .btn-accept { background: rgba(40, 167, 69, 0.2); color: #28a745; border-color: #28a745; }
+        .btn-accept:hover { background: #28a745; color: #fff; }
+        .btn-reject { background: rgba(220, 53, 69, 0.2); color: #dc3545; border-color: #dc3545; }
+        .btn-reject:hover { background: #dc3545; color: #fff; }
+
         .btn-feature { background: rgba(255, 215, 0, 0.1); border-color: #554400; color: #666; }
         .btn-feature:hover { background: rgba(255, 215, 0, 0.3); color: #ffd700; }
         .btn-feature.active { background: #ffd700; color: #000; box-shadow: 0 0 10px #ffd700; border-color: #ffd700; }
         
-        /* ARCHIVE BUTTON STYLES */
         .btn-archive { background: rgba(128, 128, 128, 0.1); border-color: #666; color: #888; }
         .btn-archive:hover { background: #666; color: #fff; }
         .btn-archive.archived { background: #444; color: #aaa; border-color: #333; position: relative; }
-        .btn-archive.archived::after { content: ''; position: absolute; width: 80%; height: 2px; background: #aaa; left: 10%; top: 50%; transform: rotate(-15deg); }
+        .btn-delete { background: rgba(255, 0, 0, 0.1); border-color: #550000; color: #ff5555; }
+        .btn-edit { background: rgba(0, 255, 255, 0.1); border-color: #005555; color: #00ffff; }
 
-        /* Style for Archived Items in List */
-        .series-item.archived-item { opacity: 0.5; filter: grayscale(1); border: 1px dashed #444; }
         .series-item { background: #0a0a0a; border: 1px solid #333; margin-bottom: 15px; border-radius: 8px; overflow: hidden; transition: 0.3s; }
         .series-header { padding: 15px; display: flex; justify-content: space-between; align-items: flex-start; background: #151515; cursor: pointer; transition: 0.2s; gap: 10px; flex-wrap: wrap; }
         .series-header:hover { background: #222; }
-        .series-info { flex: 1; }
         .series-info strong { font-family: 'Teko'; font-size: 1.4rem; color: #fff; font-weight: 500; display: block; line-height: 1.1; }
         .series-info small { color: #888; font-family: 'Rajdhani'; text-transform: uppercase; font-size: 0.8rem; }
-
+        
         .edit-mode-box { width: 100%; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #333; display: none; }
         .edit-mode-box.active { display: block; cursor: default; }
         .edit-input { width: 100%; padding: 8px; background: #000; border: 1px solid #444; color: #fff; margin-bottom: 5px; font-size: 0.9rem; }
         
         .ep-list { display: none; padding: 0; background: #050505; border-top: 1px solid #333; }
         .ep-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #222; transition: 0.2s; flex-wrap: wrap; gap: 10px; }
-        .ep-item:hover { background: #111; }
-        .ep-item:last-child { border-bottom: none; }
         .ep-title { color: #ccc; font-family: 'Rajdhani'; font-weight: bold; flex: 1; min-width: 150px; }
 
         .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; display: none; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(5px); }
         .loader { border: 5px solid #333; border-top: 5px solid var(--accent); border-radius: 50%; width: 60px; height: 60px; animation: spin 1s linear infinite; box-shadow: 0 0 20px var(--accent-glow); }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         hr { border: 0; border-top: 1px solid #333; margin: 30px 0; }
-        #seriesStatus { font-family: 'Rajdhani'; font-weight: bold; margin-top: 5px; font-size: 0.9rem; }
-        
-        .btn-save { background: #00ff00; color: #000; }
-        .btn-cancel { background: #555; color: #fff; }
 
         @media (max-width: 600px) {
-            .header { flex-direction: column; align-items: flex-start; }
-            .tabs { font-size: 0.9rem; }
-            .tab { padding: 12px; }
-            .panel { padding: 20px; }
-            .series-header { flex-direction: column; }
-            .btn-action-group { width: 100%; justify-content: space-between; margin-top: 5px; }
+            .app-table thead { display: none; }
+            .app-table tr { display: block; margin-bottom: 15px; border: 1px solid #333; border-radius: 8px; padding: 10px; }
+            .app-table td { display: flex; justify-content: space-between; border: none; padding: 5px 0; }
+            .app-table td::before { content: attr(data-label); color: var(--accent); font-weight: bold; margin-right: 10px; font-family: 'Rajdhani'; }
         }
     </style>
 </head>
@@ -109,6 +111,7 @@
     <div class="tabs">
         <div class="tab active" onclick="switchTab('uploadPanel')"><i class="fas fa-cloud-upload-alt"></i> UPLOAD</div>
         <div class="tab" onclick="switchTab('managePanel')"><i class="fas fa-edit"></i> MANAGE</div>
+        <div class="tab" onclick="switchTab('appPanel')"><i class="fas fa-users"></i> APPLICATIONS</div>
     </div>
 
     <div class="container">
@@ -150,12 +153,32 @@
 
         <div id="managePanel" class="panel">
             <h2 style="font-family:'Teko'; color:var(--accent); margin-top:0;">DATABASE CONTENT</h2>
-            <p class="note" style="margin-bottom:20px;">
-                <i class="fas fa-star" style="color:#ffd700"></i> Feature &nbsp;|&nbsp; 
-                <i class="fas fa-archive" style="color:#888"></i> Archive (Hide)
-            </p>
             <div id="manageList">
                 <p style="text-align:center; padding:40px; color:#666;"><i class="fas fa-circle-notch fa-spin"></i> Loading data...</p>
+            </div>
+        </div>
+
+        <div id="appPanel" class="panel">
+            <h2 style="font-family:'Teko'; color:var(--accent); margin-top:0;">CREATOR APPLICATIONS</h2>
+            <p class="note" style="margin-bottom:20px;">Review and manage requests from users wanting to be creators.</p>
+            
+            <div style="overflow-x: auto;">
+                <table class="app-table">
+                    <thead>
+                        <tr>
+                            <th>Artist Name</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Portfolio</th>
+                            <th style="text-align:right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appList">
+                        </tbody>
+                </table>
+            </div>
+            <div id="appLoading" style="text-align:center; padding:30px; color:#666; display:none;">
+                <i class="fas fa-circle-notch fa-spin"></i> Loading Applications...
             </div>
         </div>
 
@@ -170,7 +193,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getDatabase, ref, update, push, get, child, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-        // CONFIG
+        // FIREBASE CONFIG
         const firebaseConfig = {
             apiKey: "AIzaSyDqDvRp1IGmhC5_EtQ8I5lBBfkPOaUBR-A",
             authDomain: "inkspace-c9dca.firebaseapp.com",
@@ -183,7 +206,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-
         let isSeriesExist = false;
 
         // --- HELPERS ---
@@ -192,18 +214,12 @@
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
+            
             if(tabName === 'managePanel') loadManagementList();
+            if(tabName === 'appPanel') loadApplications(); 
         }
-        
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
 
         const createSlug = (text) => text.toLowerCase().replace(/ /g, "_").replace(/[^\w-]+/g, "");
-        
         const convertToBase64 = (file) => {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -213,42 +229,142 @@
             });
         };
 
-        window.previewFiles = () => {
-            const files = document.getElementById('epFiles').files;
-            const display = document.getElementById('filePreview');
-            if(files.length > 0) {
-                display.innerHTML = `<span><i class="fas fa-check-circle"></i> <b>${files.length} Pages Selected</b></span>`;
-                display.style.color = "#0f0";
-                display.style.background = "rgba(0,255,0,0.1)";
-                display.style.borderColor = "rgba(0,255,0,0.3)";
-            } else {
-                display.innerHTML = "No files selected";
-                display.style.color = "#ccc";
-                display.style.background = "rgba(0,255,0,0.05)";
-                display.style.borderColor = "rgba(0,255,0,0.2)";
+        // --- 1. APPLICATION LOGIC (FIXED) ---
+        window.loadApplications = () => {
+            const listBody = document.getElementById('appList');
+            const loading = document.getElementById('appLoading');
+            
+            listBody.innerHTML = '';
+            loading.style.display = 'block';
+
+            onValue(ref(db, 'applications'), (snapshot) => {
+                loading.style.display = 'none';
+                listBody.innerHTML = ''; 
+                const data = snapshot.val();
+
+                if(!data) {
+                    listBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px;">No pending applications.</td></tr>';
+                    return;
+                }
+
+                Object.keys(data).forEach(key => {
+                    const app = data[key];
+                    const statusClass = app.status === 'approved' ? 'badge-approved' : (app.status === 'rejected' ? 'badge-rejected' : 'badge-pending');
+                    const statusText = app.status ? app.status : 'Pending';
+                    
+                    const row = `
+                        <tr>
+                            <td data-label="Artist Name" style="font-weight:bold; color:#fff;">${app.artistName || 'Unknown'}</td>
+                            <td data-label="Email">${app.email}</td>
+                            <td data-label="Status"><span class="badge ${statusClass}">${statusText}</span></td>
+                            <td data-label="Portfolio">
+                                ${app.portfolio ? `<a href="#" onclick="viewImage('${app.portfolio}')" style="color:var(--accent)">View Art</a>` : '-'}
+                            </td>
+                            <td data-label="Actions" style="text-align:right;">
+                                <div class="btn-action-group" style="justify-content:flex-end;">
+                                    <button class="btn-small btn-accept" onclick="updateAppStatus('${key}', 'approved')"><i class="fas fa-check"></i></button>
+                                    <button class="btn-small btn-reject" onclick="updateAppStatus('${key}', 'rejected')"><i class="fas fa-times"></i></button>
+                                    <button class="btn-small btn-delete" onclick="deleteApp('${key}')"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    listBody.innerHTML += row;
+                });
+            });
+        };
+
+        window.viewImage = (base64) => {
+            const win = window.open();
+            win.document.write(`<img src="${base64}" style="max-width:100%">`);
+        };
+
+        // --- UPDATED LOGIC HERE (FIXED REMOVE LOGIC) ---
+        window.updateAppStatus = async (id, status) => {
+            if(confirm(`Mark this application as ${status.toUpperCase()}?`)) {
+                try {
+                    // 1. Update status dalam applications
+                    await update(ref(db, `applications/${id}`), { status: status });
+
+                    // 2. Logic: Approve vs Reject
+                    if (status === 'approved') {
+                        // Kalau approve, kita kena pastikan tak duplicate, so padam dulu kalau ada
+                        await removeCreatorFromPublic(id);
+
+                        // Ambil data dan copy ke public
+                        const snapshot = await get(child(ref(db), `applications/${id}`));
+                        const appData = snapshot.val();
+                        if (appData) {
+                            await push(ref(db, 'public_creators'), {
+                                name: appData.artistName,
+                                image: appData.portfolio,
+                                original_app_id: id // Link ID
+                            });
+                            alert("Creator Approved & Added to Creators Page!");
+                        }
+                    } else if (status === 'rejected') {
+                        // Kalau reject, CARI DAN PADAM dari public_creators
+                        await removeCreatorFromPublic(id);
+                        alert("Application Rejected & Removed from Creators Page!");
+                    }
+
+                } catch(e) { 
+                    console.error(e);
+                    alert("Error: " + e.message); 
+                }
+            }
+        };
+
+        // Helper function untuk cari dan padam creator dari public list
+        async function removeCreatorFromPublic(originalId) {
+            const publicRef = ref(db, 'public_creators');
+            const snapshot = await get(publicRef);
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                // Loop semua creator, cari mana yang original_app_id sama dengan id yang direject
+                for (const [key, value] of Object.entries(data)) {
+                    if (value.original_app_id === originalId) {
+                        await remove(ref(db, `public_creators/${key}`));
+                    }
+                }
             }
         }
+        // ---------------------------------------------
 
-        // --- UPLOAD LOGIC ---
+        window.deleteApp = async (id) => {
+            if(confirm("Delete this application permanently?")) {
+                try {
+                    // Delete dari public juga kalau ada
+                    await removeCreatorFromPublic(id);
+                    // Delete dari applications
+                    await remove(ref(db, `applications/${id}`));
+                } catch(e) { alert("Error: " + e.message); }
+            }
+        };
+
+        // --- 2. UPLOAD LOGIC ---
+        window.previewFiles = () => {
+            const files = document.getElementById('epFiles').files;
+            document.getElementById('filePreview').innerHTML = files.length > 0 
+                ? `<span style="color:#0f0"><i class="fas fa-check"></i> ${files.length} Pages Selected</span>` 
+                : "No files selected";
+        }
+
         window.checkSeries = async () => {
             const title = document.getElementById('seriesTitle').value.trim();
-            const statusDiv = document.getElementById('seriesStatus');
-            const authorInput = document.getElementById('authorName');
-
-            if(!title) { statusDiv.innerHTML = ""; return; }
-            
+            if(!title) return;
             const slug = createSlug(title);
             const snapshot = await get(child(ref(db), `series/${slug}`));
-
+            const statusDiv = document.getElementById('seriesStatus');
+            
             if(snapshot.exists()) {
                 isSeriesExist = true;
                 const data = snapshot.val();
-                statusDiv.innerHTML = `<span style="color:#00ff88"><i class="fas fa-check"></i> Series Found. (Cover Optional)</span>`;
-                if(data.author) authorInput.value = data.author;
+                statusDiv.innerHTML = `<span style="color:#00ff88"><i class="fas fa-check"></i> Found: ${data.author}</span>`;
+                if(data.author) document.getElementById('authorName').value = data.author;
             } else {
                 isSeriesExist = false;
-                statusDiv.innerHTML = `<span style="color:#ffcc00"><i class="fas fa-star"></i> New Series! Cover Image Required.</span>`;
-                authorInput.value = "";
+                statusDiv.innerHTML = `<span style="color:#ffcc00"><i class="fas fa-star"></i> New Series</span>`;
             }
         }
 
@@ -258,19 +374,13 @@
             const epName = document.getElementById('epName').value.trim();
             const coverFile = document.getElementById('coverFile').files[0];
             const epFiles = document.getElementById('epFiles').files;
-
             const loader = document.getElementById('loader');
-            const loaderText = document.getElementById('loaderText');
 
-            if(!title || !author || !epName || epFiles.length === 0) {
-                return alert("Please fill all fields and select pages!");
-            }
-
-            if(!isSeriesExist && !coverFile) return alert("New series must have a Cover Image!");
+            if(!title || !author || !epName || epFiles.length === 0) return alert("Please fill all fields!");
+            if(!isSeriesExist && !coverFile) return alert("New series needs a cover!");
 
             loader.style.display = 'flex';
-            loaderText.innerText = "PROCESSING IMAGES... (DO NOT CLOSE)";
-
+            
             try {
                 const seriesId = createSlug(title);
                 const updates = {};
@@ -280,39 +390,25 @@
                 updates[`series/${seriesId}/author`] = author;
                 updates[`series/${seriesId}/last_updated`] = timestamp;
 
-                if(coverFile) {
-                    const base64Cover = await convertToBase64(coverFile);
-                    updates[`series/${seriesId}/cover`] = base64Cover;
-                }
+                if(coverFile) updates[`series/${seriesId}/cover`] = await convertToBase64(coverFile);
 
-                loaderText.innerText = `CONVERTING ${epFiles.length} PAGES...`;
-                
                 const sortedFiles = Array.from(epFiles).sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
-                const pagePromises = sortedFiles.map(file => convertToBase64(file));
-                const pagesArray = await Promise.all(pagePromises);
-
+                const pagesArray = await Promise.all(sortedFiles.map(file => convertToBase64(file)));
                 const newEpKey = push(ref(db, `series/${seriesId}/episodes`)).key;
                 
-                updates[`series/${seriesId}/episodes/${newEpKey}`] = {
-                    name: epName,
-                    pages: pagesArray,
-                    timestamp: timestamp
-                };
-
-                loaderText.innerText = "UPLOADING TO SERVER...";
+                updates[`series/${seriesId}/episodes/${newEpKey}`] = { name: epName, pages: pagesArray, timestamp: timestamp };
+                
                 await update(ref(db), updates);
-
-                alert("PUBLISH SUCCESSFUL!");
+                alert("Published!");
                 location.reload();
-
-            } catch (error) {
-                console.error(error);
-                alert("Error: " + error.message);
+            } catch (e) {
+                console.error(e);
+                alert("Error: " + e.message);
                 loader.style.display = 'none';
             }
         });
 
-        // --- MANAGE / EDIT LOGIC ---
+        // --- 3. MANAGE LOGIC ---
         window.loadManagementList = () => {
             const listDiv = document.getElementById('manageList');
             listDiv.innerHTML = '<p style="text-align:center; padding:40px; color:#666;"><i class="fas fa-circle-notch fa-spin"></i> Loading...</p>';
@@ -320,36 +416,24 @@
             onValue(ref(db, 'series'), (snapshot) => {
                 listDiv.innerHTML = '';
                 const data = snapshot.val();
-
-                if(!data) {
-                    listDiv.innerHTML = '<p style="text-align:center; padding:40px; color:#555;">Database Empty.</p>';
-                    return;
-                }
+                if(!data) { listDiv.innerHTML = '<p style="text-align:center; padding:40px;">Empty.</p>'; return; }
 
                 Object.keys(data).forEach(seriesKey => {
                     const s = data[seriesKey];
                     const epCount = s.episodes ? Object.keys(s.episodes).length : 0;
-                    const author = s.author || "Unknown";
                     
-                    const isFeatured = s.isFeatured === true ? 'active' : '';
-                    const isArchived = s.isArchived === true;
-                    const archiveClass = isArchived ? 'archived' : '';
-                    const itemClass = isArchived ? 'series-item archived-item' : 'series-item';
-
                     let html = `
-                        <div class="${itemClass}">
+                        <div class="series-item ${s.isArchived ? 'archived-item' : ''}">
                             <div class="series-header" onclick="toggleEpList(event, '${seriesKey}')">
                                 <div class="series-info">
                                     <strong>${s.title}</strong>
-                                    <small>By: ${author} • ${epCount} EPISODES</small>
+                                    <small>By: ${s.author} • ${epCount} Eps</small>
                                 </div>
                                 <div class="btn-action-group">
-                                    <button class="btn-small btn-feature ${isFeatured}" onclick="toggleFeature(event, '${seriesKey}', ${s.isFeatured === true})"><i class="fas fa-star"></i></button>
-                                    
-                                    <button class="btn-small btn-archive ${archiveClass}" onclick="toggleArchive(event, '${seriesKey}', ${isArchived})"><i class="fas fa-archive"></i></button>
-
-                                    <button class="btn-small btn-edit" onclick="toggleEditSeries(event, '${seriesKey}', '${s.title}', '${author}')"><i class="fas fa-pencil-alt"></i></button>
-                                    <i class="fas fa-chevron-down" style="color:#666; margin-left:10px;"></i>
+                                    <button class="btn-small btn-feature ${s.isFeatured?'active':''}" onclick="toggleFeature(event, '${seriesKey}', ${s.isFeatured})"><i class="fas fa-star"></i></button>
+                                    <button class="btn-small btn-archive ${s.isArchived?'archived':''}" onclick="toggleArchive(event, '${seriesKey}', ${s.isArchived})"><i class="fas fa-archive"></i></button>
+                                    <button class="btn-small btn-edit" onclick="toggleEditSeries(event, '${seriesKey}')"><i class="fas fa-pencil-alt"></i></button>
+                                    <button class="btn-small btn-delete" onclick="deleteSeries('${seriesKey}')"><i class="fas fa-trash"></i></button>
                                 </div>
                             </div>
 
@@ -357,169 +441,65 @@
                                 <label style="font-size:0.9rem;">Rename Title:</label>
                                 <input type="text" id="input-title-${seriesKey}" value="${s.title}" class="edit-input">
                                 <label style="font-size:0.9rem;">Rename Author:</label>
-                                <input type="text" id="input-author-${seriesKey}" value="${author}" class="edit-input">
+                                <input type="text" id="input-author-${seriesKey}" value="${s.author}" class="edit-input">
                                 <div style="display:flex; gap:10px; margin-top:10px;">
-                                    <button class="btn-small btn-save" onclick="saveSeries('${seriesKey}')">SAVE CHANGES</button>
-                                    <button class="btn-small btn-cancel" onclick="cancelEditSeries('${seriesKey}')">CANCEL</button>
+                                    <button class="btn-small btn-accept" onclick="saveSeries('${seriesKey}')">SAVE</button>
                                 </div>
                             </div>
 
-                            <div id="epList-${seriesKey}" class="ep-list">
-                    `;
-
+                            <div id="epList-${seriesKey}" class="ep-list">`;
+                                
                     if(s.episodes) {
                         Object.keys(s.episodes).forEach(epKey => {
-                            const ep = s.episodes[epKey];
-                            const pageCount = ep.pages ? ep.pages.length : (ep.img ? 1 : 0);
-                            html += `
-                                <div class="ep-item">
-                                    <span class="ep-title" id="disp-ep-${epKey}">${ep.name} <small style="color:#666; font-weight:normal;">(${pageCount} pgs)</small></span>
-                                    
-                                    <div id="edit-ep-${epKey}" style="display:none; flex:1; margin-right:10px;">
-                                        <input type="text" id="input-ep-${epKey}" value="${ep.name}" class="edit-input">
-                                        <div style="display:flex; gap:5px; margin-top:5px;">
-                                            <button class="btn-small btn-save" onclick="saveEpisode('${seriesKey}', '${epKey}')">SAVE</button>
-                                            <button class="btn-small btn-cancel" onclick="cancelEditEpisode('${epKey}')">CANCEL</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="btn-action-group" id="action-ep-${epKey}">
-                                        <button class="btn-small btn-edit" onclick="toggleEditEpisode('${epKey}')"><i class="fas fa-pencil-alt"></i></button>
-                                        <button class="btn-small btn-delete" onclick="deleteEpisode('${seriesKey}', '${epKey}')"><i class="fas fa-trash"></i></button>
-                                    </div>
-                                </div>
-                            `;
+                            html += `<div class="ep-item"><span class="ep-title">${s.episodes[epKey].name}</span> 
+                            <button class="btn-small btn-delete" onclick="deleteEpisode('${seriesKey}', '${epKey}')"><i class="fas fa-trash"></i></button></div>`;
                         });
-                    } else {
-                        html += `<div style="padding:20px; color:#555; text-align:center; font-style:italic;">No episodes found.</div>`;
                     }
-
                     html += `</div></div>`;
                     listDiv.innerHTML += html;
                 });
-            }, { onlyOnce: true });
+            });
         };
 
-        // --- BUTTON TOGGLE FIXES (SMOOTHER) ---
-        
-        window.toggleFeature = async (e, id, currentStatus) => {
-            e.stopPropagation(); e.preventDefault(); // Stop bubbling immediately
-            const btn = e.currentTarget;
-            
-            // Visual feedback first (Instant)
-            btn.classList.toggle('active');
-            const newStatus = !currentStatus;
-
-            try {
-                await update(ref(db, `series/${id}`), { isFeatured: newStatus });
-            } catch(e) { 
-                console.error(e);
-                // Revert if error
-                btn.classList.toggle('active');
-                alert("Error updating feature status");
-            }
-        };
-
-        window.toggleArchive = async (e, id, currentStatus) => {
-            e.stopPropagation(); e.preventDefault(); // Stop bubbling immediately
-            const btn = e.currentTarget;
-            
-            // Visual feedback first
-            btn.classList.toggle('archived');
-            const row = btn.closest('.series-item');
-            if(row) row.classList.toggle('archived-item');
-
-            const newStatus = !currentStatus;
-
-            try {
-                await update(ref(db, `series/${id}`), { isArchived: newStatus });
-            } catch(e) { 
-                console.error(e);
-                // Revert if error
-                btn.classList.toggle('archived');
-                if(row) row.classList.toggle('archived-item');
-                alert("Error updating archive status");
-            }
-        };
-
-        // --- UI FUNCTIONS ---
         window.toggleEpList = (e, id) => {
             if(e.target.closest('button') || e.target.closest('.edit-mode-box')) return;
             const el = document.getElementById(`epList-${id}`);
-            const editBox = document.getElementById(`edit-series-${id}`);
-            const icon = e.currentTarget.querySelector('.fa-chevron-down');
-            editBox.classList.remove('active');
-            if (el.style.display === 'block') {
-                el.style.display = 'none';
-                if(icon) icon.style.transform = "rotate(0deg)";
-            } else {
-                el.style.display = 'block';
-                if(icon) icon.style.transform = "rotate(180deg)";
-            }
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
+            document.getElementById(`edit-series-${id}`).classList.remove('active');
         };
 
-        window.toggleEditSeries = (e, id, currentTitle, currentAuthor) => {
+        window.toggleEditSeries = (e, id) => {
             e.stopPropagation();
-            const editBox = document.getElementById(`edit-series-${id}`);
-            editBox.classList.toggle('active');
+            document.getElementById(`edit-series-${id}`).classList.toggle('active');
         };
-
-        window.cancelEditSeries = (id) => document.getElementById(`edit-series-${id}`).classList.remove('active');
 
         window.saveSeries = async (id) => {
-            const newTitle = document.getElementById(`input-title-${id}`).value.trim();
-            const newAuthor = document.getElementById(`input-author-${id}`).value.trim();
-            if(!newTitle || !newAuthor) return alert("Title and Author cannot be empty.");
-            try {
-                await update(ref(db, `series/${id}`), { title: newTitle, author: newAuthor });
-                alert("Series Updated!");
-            } catch(e) { alert("Error updating: " + e.message); }
+            const newTitle = document.getElementById(`input-title-${id}`).value;
+            const newAuthor = document.getElementById(`input-author-${id}`).value;
+            await update(ref(db, `series/${id}`), { title: newTitle, author: newAuthor });
+            alert("Updated!");
         };
+        
+        window.toggleFeature = async (e, id, status) => { e.stopPropagation(); await update(ref(db, `series/${id}`), { isFeatured: !status }); };
+        window.toggleArchive = async (e, id, status) => { e.stopPropagation(); await update(ref(db, `series/${id}`), { isArchived: !status }); };
+        window.deleteSeries = async (id) => { if(confirm("Delete entire series?")) await remove(ref(db, `series/${id}`)); }
+        window.deleteEpisode = async (seriesId, epId) => { if(confirm("Delete episode?")) await remove(ref(db, `series/${seriesId}/episodes/${epId}`)); };
 
-        window.toggleEditEpisode = (epId) => {
-            document.getElementById(`disp-ep-${epId}`).style.display = 'none';
-            document.getElementById(`action-ep-${epId}`).style.display = 'none';
-            document.getElementById(`edit-ep-${epId}`).style.display = 'block';
-        };
-
-        window.cancelEditEpisode = (epId) => {
-            document.getElementById(`disp-ep-${epId}`).style.display = 'block';
-            document.getElementById(`action-ep-${epId}`).style.display = 'flex';
-            document.getElementById(`edit-ep-${epId}`).style.display = 'none';
-        };
-
-        window.saveEpisode = async (seriesId, epId) => {
-            const newName = document.getElementById(`input-ep-${epId}`).value.trim();
-            if(!newName) return alert("Episode name cannot be empty.");
-            try {
-                await update(ref(db, `series/${seriesId}/episodes/${epId}`), { name: newName });
-                alert("Episode Renamed!");
-            } catch(e) { alert("Error: " + e.message); }
-        };
-
-        window.deleteEpisode = async (seriesId, epId) => {
-            if(confirm("⚠ WARNING: DELETE this episode permanently?")) {
-                try {
-                    await remove(ref(db, `series/${seriesId}/episodes/${epId}`));
-                    alert("Episode Deleted.");
-                } catch(e) { alert("Error deleting: " + e.message); }
-            }
-        };
-
+        // Expose functions to HTML
+        window.loadApplications = loadApplications;
+        window.updateAppStatus = updateAppStatus;
+        window.deleteApp = deleteApp;
+        window.viewImage = viewImage;
         window.checkSeries = checkSeries;
         window.previewFiles = previewFiles;
         window.switchTab = switchTab;
         window.toggleEpList = toggleEpList;
-        window.toggleEditSeries = toggleEditSeries;
-        window.cancelEditSeries = cancelEditSeries;
-        window.saveSeries = saveSeries;
-        window.toggleEditEpisode = toggleEditEpisode;
-        window.cancelEditEpisode = cancelEditEpisode;
-        window.saveEpisode = saveEpisode;
-        window.deleteEpisode = deleteEpisode;
         window.toggleFeature = toggleFeature;
         window.toggleArchive = toggleArchive;
-
+        window.deleteSeries = deleteSeries;
+        window.deleteEpisode = deleteEpisode;
+        window.toggleEditSeries = toggleEditSeries;
+        window.saveSeries = saveSeries;
     </script>
 </body>
 </html>
