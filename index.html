@@ -136,8 +136,9 @@
                 <a href="#" class="nav-link active" data-lang-key="nav_updates">Updates</a>
                 <a href="#" class="nav-link" data-lang-key="nav_featured">Featured</a>
                 <a href="#" class="nav-link" data-lang-key="nav_ranking">Ranking</a>
-                <a href="#" class="nav-link" data-lang-key="nav_creators">Creators</a>
+                <a href="creators.html" class="nav-link" data-lang-key="nav_creators">Creators</a>
                 <a href="#" class="nav-link">Favorite</a>
+                <a href="about.html" class="nav-link">About Us</a> </div>
             </div>
         </div>
         <div class="nav-right">
@@ -159,14 +160,15 @@
         <a href="#" class="mobile-link" data-lang-key="nav_updates">Updates</a>
         <a href="#" class="mobile-link" data-lang-key="nav_featured">Featured</a>
         <a href="#" class="mobile-link" data-lang-key="nav_ranking">Ranking</a>
-        <a href="#" class="mobile-link" data-lang-key="nav_creators">Creators</a>
+        <a href="creators.html" class="mobile-link" data-lang-key="nav_creators">Creators</a>
         <a href="#" class="mobile-link">Favorite</a>
+        <a href="about.html" class="mobile-link">About Us</a> </div>
     </div>
 
     <div class="container">
         
         <div id="banner-container" class="featured-wrapper" style="display:none;">
-            </div>
+        </div>
 
         <div class="layout-wrapper">
             <div class="main-content">
@@ -186,9 +188,10 @@
                     <h2 class="section-title" style="font-size:1.8rem">HOTTEST <span>TOP 5</span></h2>
                 </div>
                 <div class="sidebar-list" id="top-list">
-                    </div>
+                </div>
             </div>
         </div>
+
     </div>
 
     <div class="modal-overlay" id="epModal">
@@ -245,7 +248,7 @@
         };
         let currentLang = 'en';
 
-        // --- FETCH DATA & REALTIME UPDATE (FIXED LOGIC) ---
+        // --- FETCH COMICS (EXISTING LOGIC) ---
         onValue(ref(db, 'series'), (snapshot) => {
             const data = snapshot.val();
             grid.innerHTML = '';
@@ -256,8 +259,6 @@
                 return; 
             }
 
-            // 1. FILTER ARCHIVED ITEMS (KEY FIX)
-            // Hanya ambil item yang TIDAK di-archive (isArchived != true)
             allSeriesData = Object.keys(data)
                 .map(key => ({ id: key, ...data[key] }))
                 .filter(s => s.isArchived !== true);
@@ -268,16 +269,13 @@
                 return;
             }
 
-            // 2. RENDER BANNER (FIND FEATURED FROM ACTIVE LIST)
             const featured = allSeriesData.find(s => s.isFeatured === true);
             if(featured) renderBanner(featured);
             else bannerContainer.style.display = 'none';
 
-            // 3. RENDER SIDEBAR (SORT BY LIKES)
             const topSeries = [...allSeriesData].sort((a, b) => (b.likes || 0) - (a.likes || 0)).slice(0, 5);
             renderSidebar(topSeries);
 
-            // 4. RENDER MAIN GRID (SORT BY DATE)
             allSeriesData.sort((a, b) => b.last_updated - a.last_updated);
             renderGrid(allSeriesData);
         });
