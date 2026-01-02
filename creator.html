@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Ink Space | Creator Registration</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Teko:wght@400;600;700&family=Rajdhani:wght@500;700&family=Roboto+Condensed:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- PREMIUM THEME --- */
+        :root { --bg-body: #050505; --bg-card: #121212; --accent: #ff6600; --accent-glow: rgba(255, 102, 0, 0.4); --text-main: #ffffff; --text-muted: #888888; --border: 1px solid #333; }
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 0; font-family: 'Roboto Condensed', sans-serif; background-color: var(--bg-body); color: var(--text-main); background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px); background-size: 40px 40px; min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+
+        .container { max-width: 550px; width: 100%; padding: 20px; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .register-card {
+            background: linear-gradient(145deg, #151515, #0a0a0a);
+            border: 1px solid #333; border-radius: 16px; padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); position: relative; overflow: hidden;
+        }
+        .register-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--accent); box-shadow: 0 0 15px var(--accent); }
+
+        .form-header { text-align: center; margin-bottom: 30px; }
+        .form-title { font-family: 'Teko'; font-size: 3rem; margin: 0; line-height: 1; text-transform: uppercase; }
+        .form-title span { color: var(--accent); }
+        .form-desc { color: var(--text-muted); font-family: 'Rajdhani'; margin-top: 5px; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; color: #ccc; margin-bottom: 8px; font-family: 'Rajdhani'; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .form-input {
+            width: 100%; padding: 12px 15px; background: rgba(255,255,255,0.05);
+            border: 1px solid var(--border); border-radius: 8px; color: #fff; font-family: 'Roboto Condensed';
+            transition: 0.3s; outline: none;
+        }
+        .form-input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(255, 102, 0, 0.2); background: rgba(255,255,255,0.08); }
+        textarea.form-input { resize: vertical; min-height: 100px; }
+
+        /* FILE UPLOAD STYLE */
+        .file-upload-wrapper {
+            position: relative; width: 100%; height: 100px;
+            border: 2px dashed #444; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; flex-direction: column;
+            cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.02);
+        }
+        .file-upload-wrapper:hover { border-color: var(--accent); background: rgba(255, 102, 0, 0.05); }
+        .file-upload-wrapper i { font-size: 2rem; color: var(--text-muted); margin-bottom: 5px; }
+        .file-upload-text { color: var(--text-muted); font-family: 'Rajdhani'; font-size: 0.9rem; }
+        #file-input { position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+
+        .submit-btn {
+            width: 100%; background: var(--accent); color: #000; border: none;
+            padding: 15px; font-family: 'Rajdhani'; font-weight: 700; font-size: 1.2rem;
+            text-transform: uppercase; cursor: pointer; border-radius: 8px; transition: 0.3s;
+            margin-top: 10px;
+        }
+        .submit-btn:hover { background: #fff; box-shadow: 0 0 20px var(--accent-glow); transform: translateY(-2px); }
+        .back-link { display: block; text-align: center; margin-top: 20px; color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: 0.3s; }
+        .back-link:hover { color: #fff; }
+
+        /* Loading Overlay */
+        .loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; display: none; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(5px); }
+        .loader { border: 5px solid #333; border-top: 5px solid var(--accent); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="register-card">
+            <div class="form-header">
+                <h1 class="form-title">JOIN <span>INK SPACE</span></h1>
+                <p class="form-desc">Apply for a Creator Account</p>
+            </div>
+
+            <form id="creatorForm">
+                
+                <div class="form-group">
+                    <label class="form-label">Artist Name / Pen Name</label>
+                    <input type="text" id="artistName" class="form-input" placeholder="e.g. Akira" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="artistEmail" class="form-input" placeholder="you@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Upload Sample Art (Max 1MB)</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="file-input" accept="image/*" required>
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span class="file-upload-text" id="file-name">Drag & drop or Click to Browse</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Why join us?</label>
+                    <textarea id="joinReason" class="form-input" placeholder="Tell us about your style..."></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">SUBMIT APPLICATION</button>
+            </form>
+
+            <a href="about.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to About Page</a>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loader">
+        <div class="loader"></div>
+        <p style="color:#fff; margin-top:15px; font-family:'Rajdhani'; letter-spacing:1px;">SENDING APPLICATION...</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        // FIREBASE CONFIG
+        const firebaseConfig = {
+            apiKey: "AIzaSyDqDvRp1IGmhC5_EtQ8I5lBBfkPOaUBR-A",
+            authDomain: "inkspace-c9dca.firebaseapp.com",
+            databaseURL: "https://inkspace-c9dca-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "inkspace-c9dca",
+            storageBucket: "inkspace-c9dca.firebasestorage.app",
+            messagingSenderId: "92054275710",
+            appId: "1:92054275710:web:b5e13736d46d7143307a2f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // UI Helpers
+        const fileInput = document.getElementById('file-input');
+        const fileNameDisplay = document.getElementById('file-name');
+        
+        fileInput.addEventListener('change', function() {
+            var name = this.files[0] ? this.files[0].name : "Drag & drop or Click to Browse";
+            fileNameDisplay.innerText = name;
+            fileNameDisplay.style.color = "#fff";
+        });
+
+        const convertToBase64 = (file) => {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        };
+
+        // SUBMIT LOGIC
+        document.getElementById('creatorForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById('artistName').value.trim();
+            const email = document.getElementById('artistEmail').value.trim();
+            const reason = document.getElementById('joinReason').value.trim();
+            const file = fileInput.files[0];
+            const submitBtn = document.getElementById('submitBtn');
+            const loader = document.getElementById('loader');
+
+            if (!name || !email || !file) return alert("Please fill in required fields.");
+
+            loader.style.display = 'flex';
+            submitBtn.disabled = true;
+
+            try {
+                // Convert Image to Base64
+                const base64Img = await convertToBase64(file);
+
+                // Create Data Object
+                const applicationData = {
+                    artistName: name,
+                    email: email,
+                    reason: reason,
+                    portfolio: base64Img, 
+                    status: 'pending', // Status asal
+                    timestamp: Date.now()
+                };
+
+                // Push to Firebase 'applications' node
+                await push(ref(db, 'applications'), applicationData);
+
+                loader.style.display = 'none';
+                alert("Application Sent! Our team will review your request.");
+                window.location.href = "about.html"; 
+
+            } catch (error) {
+                console.error(error);
+                loader.style.display = 'none';
+                submitBtn.disabled = false;
+                alert("Error sending application: " + error.message);
+            }
+        });
+    </script>
+
+</body>
+</html>
